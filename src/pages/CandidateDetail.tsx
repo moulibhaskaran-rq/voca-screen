@@ -4,20 +4,22 @@ import { Header } from "@/components/Header";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { Skeleton } from "@/components/ui/skeleton";
 import { Card } from "@/components/ui/card";
-import { 
-  ArrowLeft, 
-  Mail, 
-  Phone, 
-  Briefcase, 
-  Calendar, 
-  Link as LinkIcon, 
-  Star, 
-  CheckCircle2, 
+import { DetailPageSkeleton } from "@/components/LoadingSkeleton";
+import {
+  ArrowLeft,
+  Mail,
+  Phone,
+  Briefcase,
+  Calendar,
+  Link as LinkIcon,
+  Star,
+  CheckCircle2,
   XCircle,
   ChevronRight,
-  Award
+  Award,
+  Copy,
+  Check
 } from "lucide-react";
 import { Candidate } from "@/types/candidate";
 import { format } from "date-fns";
@@ -28,6 +30,7 @@ const CandidateDetail = () => {
   const navigate = useNavigate();
   const [candidate, setCandidate] = useState<Candidate | null>(null);
   const [loading, setLoading] = useState(true);
+  const [copied, setCopied] = useState(false);
 
   useEffect(() => {
     // Simulate loading - in production, fetch from API
@@ -55,17 +58,31 @@ const CandidateDetail = () => {
   }, [id]);
 
   const handleMoveToNextLevel = () => {
-    toast.success("Candidate moved to next level", {
-      description: `${candidate?.name} has been advanced in the hiring process.`,
+    toast.success("🎯 Candidate advanced!", {
+      description: `${candidate?.name} moved to the next round. Great progress!`,
+      duration: 4000,
     });
-    navigate("/");
+    setTimeout(() => navigate("/"), 1500);
   };
 
   const handleReject = () => {
-    toast.error("Candidate rejected", {
-      description: `${candidate?.name} has been rejected.`,
+    toast.error("❌ Candidate rejected", {
+      description: `${candidate?.name} has been marked as rejected.`,
+      duration: 4000,
     });
-    navigate("/");
+    setTimeout(() => navigate("/"), 1500);
+  };
+
+  const handleCopyLink = async () => {
+    if (candidate?.interviewLink) {
+      await navigator.clipboard.writeText(candidate.interviewLink);
+      setCopied(true);
+      toast.success("✓ Link copied!", {
+        description: "Interview link copied to clipboard",
+        duration: 2000,
+      });
+      setTimeout(() => setCopied(false), 2000);
+    }
   };
 
   const getSeniorityBadge = (level: string) => {
@@ -84,21 +101,7 @@ const CandidateDetail = () => {
       <div className="min-h-screen bg-background">
         <Header onUploadClick={() => {}} />
         <main className="container mx-auto px-6 py-8 max-w-5xl">
-          <Skeleton className="h-10 w-32 mb-8" />
-          <div className="space-y-6">
-            <Card className="p-8">
-              <Skeleton className="h-8 w-64 mb-4" />
-              <Skeleton className="h-4 w-48 mb-8" />
-              <div className="grid grid-cols-2 gap-6 mb-6">
-                <Skeleton className="h-16" />
-                <Skeleton className="h-16" />
-                <Skeleton className="h-16" />
-                <Skeleton className="h-16" />
-              </div>
-              <Skeleton className="h-32 mb-6" />
-              <Skeleton className="h-64" />
-            </Card>
-          </div>
+          <DetailPageSkeleton />
         </main>
       </div>
     );
@@ -118,12 +121,12 @@ const CandidateDetail = () => {
   return (
     <div className="min-h-screen bg-background">
       <Header onUploadClick={() => {}} />
-      
+
       <main className="container mx-auto px-6 py-8 max-w-5xl animate-fade-in">
-        <Button 
-          variant="ghost" 
+        <Button
+          variant="ghost"
           onClick={() => navigate("/")}
-          className="mb-8 group hover:translate-x-[-4px] transition-transform"
+          className="mb-8 group hover:translate-x-[-4px] transition-transform text-muted-foreground hover:text-foreground"
         >
           <ArrowLeft className="w-4 h-4 mr-2 group-hover:animate-pulse" />
           Back to Dashboard
@@ -131,7 +134,7 @@ const CandidateDetail = () => {
 
         <div className="space-y-6">
           {/* Header Card */}
-          <Card className="p-8 shadow-lg hover:shadow-xl transition-all duration-300 animate-slide-in-from-top border-2">
+          <Card className="p-8 glass backdrop-blur-xl rounded-3xl hover:shadow-glass-xl transition-all duration-300 animate-slide-in-from-top border border-white/20">
             <div className="flex items-start justify-between mb-6">
               <div className="flex-1">
                 <div className="flex items-center gap-3 mb-2">
@@ -209,34 +212,48 @@ const CandidateDetail = () => {
           </Card>
 
           {/* Interview Link Card */}
-          <Card className="p-6 shadow-md hover:shadow-lg transition-all duration-300 animate-slide-in-from-left">
+          <Card className="p-6 glass backdrop-blur-xl rounded-3xl hover:shadow-glass-lg transition-all duration-300 animate-slide-in-from-left border border-white/20">
             <h3 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
-              <LinkIcon className="w-5 h-5 text-primary" />
+              <div className="p-3 bg-gradient-to-br from-primary/30 to-primary-glow/20 rounded-xl shadow-glow-sm">
+                <LinkIcon className="w-5 h-5 text-primary" />
+              </div>
               Interview Link
             </h3>
-            <div className="flex items-center gap-3">
-              <code className="flex-1 text-sm bg-muted px-4 py-3 rounded-lg border">
+            <div className="flex items-center gap-3 group">
+              <code className="flex-1 text-sm glass rounded-2xl px-4 py-3 border border-white/20 group-hover:border-primary/40 transition-all font-mono backdrop-blur-md">
                 {candidate.interviewLink}
               </code>
-              <Button 
-                size="sm" 
+              <Button
+                size="sm"
                 variant="outline"
-                onClick={() => {
-                  navigator.clipboard.writeText(candidate.interviewLink);
-                  toast.success("Link copied to clipboard!");
-                }}
-                className="hover:scale-105 transition-transform"
+                onClick={handleCopyLink}
+                className="hover:scale-110 hover:shadow-glass-md transition-all duration-200 border border-white/20 gap-1 group rounded-xl glass backdrop-blur-md"
               >
-                Copy
+                {copied ? (
+                  <>
+                    <Check className="w-4 h-4 text-success animate-pop" />
+                    Copied
+                  </>
+                ) : (
+                  <>
+                    <Copy className="w-4 h-4 group-hover:scale-110 transition-transform" />
+                    Copy
+                  </>
+                )}
               </Button>
             </div>
           </Card>
 
           {/* AI Summary Card */}
           {candidate.summary && (
-            <Card className="p-6 shadow-md hover:shadow-lg transition-all duration-300 animate-slide-in-from-right border-l-4 border-l-success">
-              <h3 className="text-lg font-semibold text-foreground mb-4">AI Summary</h3>
-              <div className="bg-gradient-to-br from-muted/50 to-muted/30 rounded-xl p-6 border">
+            <Card className="p-6 glass backdrop-blur-xl rounded-3xl hover:shadow-glass-lg transition-all duration-300 animate-slide-in-from-right border-l-4 border-l-success border border-white/20">
+              <h3 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
+                <div className="p-3 bg-gradient-to-br from-success/30 to-success-glow/20 rounded-xl shadow-glow-sm">
+                  <Star className="w-5 h-5 text-success" />
+                </div>
+                AI Summary
+              </h3>
+              <div className="glass backdrop-blur-md rounded-2xl p-6 border border-white/10">
                 <p className="text-foreground leading-relaxed">{candidate.summary}</p>
               </div>
             </Card>
@@ -244,9 +261,14 @@ const CandidateDetail = () => {
 
           {/* Transcript Card */}
           {candidate.transcript && (
-            <Card className="p-6 shadow-md hover:shadow-lg transition-all duration-300 animate-slide-in-from-bottom">
-              <h3 className="text-lg font-semibold text-foreground mb-4">Interview Transcript</h3>
-              <div className="bg-muted/50 rounded-xl p-6 max-h-96 overflow-y-auto border">
+            <Card className="p-6 glass backdrop-blur-xl rounded-3xl hover:shadow-glass-lg transition-all duration-300 animate-slide-in-from-bottom border border-white/20">
+              <h3 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
+                <div className="p-3 bg-gradient-to-br from-primary/30 to-primary-glow/20 rounded-xl shadow-glow-sm">
+                  <Award className="w-5 h-5 text-primary" />
+                </div>
+                Interview Transcript
+              </h3>
+              <div className="glass backdrop-blur-md rounded-2xl p-6 max-h-96 overflow-y-auto border border-white/10 hover:border-primary/20 transition-all">
                 <p className="text-sm text-foreground leading-relaxed whitespace-pre-wrap font-mono">
                   {candidate.transcript}
                 </p>
@@ -255,14 +277,14 @@ const CandidateDetail = () => {
           )}
 
           {/* Action Buttons */}
-          <Card className="p-6 shadow-lg animate-bounce-in border-2">
+          <Card className="p-6 glass backdrop-blur-xl rounded-3xl animate-pop border border-white/20 shadow-glass-md hover:shadow-glass-lg transition-all">
             <h3 className="text-lg font-semibold text-foreground mb-4">Actions</h3>
             <div className="flex flex-col sm:flex-row gap-4">
               <Button
                 onClick={handleReject}
                 variant="destructive"
                 size="lg"
-                className="flex-1 group hover:shadow-lg transition-all duration-300"
+                className="flex-1 group hover:shadow-lg transition-all duration-300 hover:scale-105"
               >
                 <XCircle className="w-5 h-5 mr-2 group-hover:rotate-90 transition-transform" />
                 Reject Candidate
@@ -270,7 +292,7 @@ const CandidateDetail = () => {
               <Button
                 onClick={handleMoveToNextLevel}
                 size="lg"
-                className="flex-1 bg-gradient-to-r from-success to-success-glow hover:shadow-success-glow transition-all duration-300 group"
+                className="flex-1 bg-gradient-to-r from-success to-success-glow hover:shadow-success-glow transition-all duration-300 group hover:scale-105"
               >
                 Move to Next Level
                 <ChevronRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />

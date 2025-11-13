@@ -79,22 +79,46 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-background">
       <Header onUploadClick={() => setUploadDialogOpen(true)} />
-      
-      <main className="container mx-auto px-6 py-8 animate-fade-in">
-        <div className="mb-8 animate-slide-in-from-top">
-          <h1 className="text-4xl font-bold text-foreground mb-2 bg-gradient-to-r from-primary to-primary-glow bg-clip-text text-transparent">
-            AI Recruitment Dashboard
-          </h1>
-          <p className="text-muted-foreground text-lg">
-            Track and manage candidate screening interviews with AI-powered insights
-          </p>
+
+      <main className="container mx-auto px-6 py-12 animate-fade-in">
+        {/* Header Section */}
+        <div className="mb-16 animate-slide-in-from-top space-y-6">
+          <div className="space-y-4">
+            <h1 className="text-6xl md:text-7xl font-bold mb-4 text-foreground leading-tight">
+              AI Recruitment Dashboard
+            </h1>
+            <p className="text-muted-foreground/90 text-lg md:text-xl max-w-3xl font-light leading-relaxed">
+              Track and manage candidate screening interviews with AI-powered insights. Streamline your recruitment process with intelligent automation.
+            </p>
+          </div>
+
+          {/* Quick Stats Row - Glassy */}
+          <div className="flex flex-wrap gap-4 pt-6">
+            <div className="glass backdrop-blur-md rounded-2xl px-5 py-3 border border-white/20 animate-bounce-in hover:shadow-glass-sm transition-all duration-300">
+              <p className="text-sm font-semibold text-primary">
+                ✨ AI-Powered Screening
+              </p>
+            </div>
+            <div className="glass backdrop-blur-md rounded-2xl px-5 py-3 border border-white/20 animate-bounce-in hover:shadow-glass-sm transition-all duration-300" style={{ animationDelay: "100ms" }}>
+              <p className="text-sm font-semibold text-success">
+                🚀 {stats.completed} Completed Interviews
+              </p>
+            </div>
+            <div className="glass backdrop-blur-md rounded-2xl px-5 py-3 border border-white/20 animate-bounce-in hover:shadow-glass-sm transition-all duration-300" style={{ animationDelay: "200ms" }}>
+              <p className="text-sm font-semibold text-warning">
+                ⏳ {stats.inProgress} In Progress
+              </p>
+            </div>
+          </div>
         </div>
 
-        <div className="animate-slide-in-from-left">
+        {/* Stats Cards */}
+        <div className="mb-8">
           <StatsCards stats={stats} />
         </div>
 
-        <div className="mt-8 animate-slide-in-from-bottom">
+        {/* Candidates Table */}
+        <div className="animate-slide-in-from-bottom">
           <CandidatesTable
             candidates={candidates}
             onResendEmail={handleResendEmail}

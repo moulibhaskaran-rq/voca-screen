@@ -8,26 +8,32 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    --background: 210 40% 98%;
-    --foreground: 222 47% 11%;
+    --background: 0 0% 100%;
+    --foreground: 240 10% 20%;
 
     --card: 0 0% 100%;
-    --card-foreground: 222 47% 11%;
+    --card-foreground: 240 10% 20%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 222 47% 11%;
+    --popover-foreground: 240 10% 20%;
 
-    --primary: 221 83% 53%;
+    /* Professional primary - Multi-color gradient system */
+    --primary: 263 100% 50%;
     --primary-foreground: 0 0% 100%;
-    --primary-glow: 221 83% 70%;
+    --primary-glow: 263 100% 60%;
 
-    --secondary: 210 40% 96%;
-    --secondary-foreground: 222 47% 11%;
+    /* Gradient color stops for text */
+    --gradient-start: 263 100% 50%;
+    --gradient-mid: 200 100% 50%;
+    --gradient-end: 280 80% 50%;
 
-    --muted: 210 40% 96%;
-    --muted-foreground: 215 16% 47%;
+    --secondary: 0 0% 95%;
+    --secondary-foreground: 240 10% 25%;
 
-    --accent: 221 83% 53%;
+    --muted: 0 0% 88%;
+    --muted-foreground: 240 10% 45%;
+
+    --accent: 20 95% 55%;
     --accent-foreground: 0 0% 100%;
 
     --success: 142 76% 36%;
@@ -40,31 +46,41 @@ All colors MUST be HSL.
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 214 32% 91%;
-    --input: 214 32% 91%;
-    --ring: 221 83% 53%;
+    --border: 240 20% 92%;
+    --input: 240 20% 94%;
+    --ring: 241 100% 48%;
 
     --radius: 0.75rem;
 
-    --chart-1: 221 83% 53%;
-    --chart-2: 142 76% 36%;
-    --chart-3: 38 92% 50%;
-    --chart-4: 280 80% 60%;
-    --chart-5: 340 75% 55%;
+    --chart-1: 241 100% 48%;
+    --chart-2: 20 95% 55%;
+    --chart-3: 180 85% 50%;
+    --chart-4: 330 85% 60%;
+    --chart-5: 60 90% 55%;
 
-    /* Gradients */
-    --gradient-primary: linear-gradient(135deg, hsl(221 83% 53%), hsl(221 83% 70%));
-    --gradient-success: linear-gradient(135deg, hsl(142 76% 36%), hsl(142 76% 50%));
-    --gradient-card: linear-gradient(145deg, hsl(0 0% 100%), hsl(210 40% 99%));
-    --gradient-subtle: linear-gradient(180deg, hsl(210 40% 98%), hsl(220 40% 96%));
+    /* Simple solid color approach - no gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(241 100% 48%), hsl(241 100% 48%));
+    --gradient-success: linear-gradient(135deg, hsl(142 76% 36%), hsl(142 76% 36%));
+    --gradient-card: linear-gradient(145deg, hsl(0 0% 100%), hsl(0 0% 100%));
+    --gradient-subtle: linear-gradient(180deg, hsl(0 0% 100%), hsl(0 0% 100%));
 
-    /* Shadows */
-    --shadow-sm: 0 2px 4px -1px hsl(222 47% 11% / 0.06);
-    --shadow-md: 0 4px 12px -2px hsl(222 47% 11% / 0.08);
-    --shadow-lg: 0 10px 30px -5px hsl(222 47% 11% / 0.12);
-    --shadow-xl: 0 20px 40px -10px hsl(222 47% 11% / 0.15);
-    --shadow-glow: 0 0 20px hsl(221 83% 53% / 0.3);
-    --shadow-success-glow: 0 0 20px hsl(142 76% 36% / 0.3);
+    /* Simple clean background - pure white */
+    --gradient-bg-main: linear-gradient(-45deg, hsl(0 0% 100%), hsl(0 0% 100%), hsl(0 0% 100%), hsl(0 0% 100%));
+    --gradient-glass: linear-gradient(135deg, rgba(255 255 255 / 0.6), rgba(255 255 255 / 0.4));
+    --gradient-glass-dark: linear-gradient(135deg, rgba(65 105 225 / 0.05), rgba(65 105 225 / 0.02));
+
+    /* Shadows - Clean Light Theme */
+    --shadow-sm: 0 1px 2px -1px hsl(0 0% 0% / 0.05);
+    --shadow-md: 0 2px 4px -2px hsl(0 0% 0% / 0.1);
+    --shadow-lg: 0 4px 8px -4px hsl(0 0% 0% / 0.15);
+    --shadow-xl: 0 8px 16px -8px hsl(0 0% 0% / 0.2);
+    --shadow-glow: 0 0 20px hsl(241 100% 48% / 0.2);
+    --shadow-success-glow: 0 0 20px hsl(142 76% 36% / 0.2);
+
+    /* Subtle shadows - minimalist glass effect */
+    --shadow-glass-sm: 0 2px 8px 0 rgba(0, 0, 0, 0.05);
+    --shadow-glass-md: 0 4px 12px 0 rgba(0, 0, 0, 0.1);
+    --shadow-glass-lg: 0 8px 20px 0 rgba(0, 0, 0, 0.15);
 
     /* Transitions */
     --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -72,26 +88,32 @@ All colors MUST be HSL.
   }
 
   .dark {
-    --background: 222 47% 11%;
-    --foreground: 210 40% 98%;
+    --background: 240 10% 10%;
+    --foreground: 240 10% 95%;
 
-    --card: 217 33% 17%;
-    --card-foreground: 210 40% 98%;
+    --card: 240 10% 18%;
+    --card-foreground: 240 10% 95%;
 
-    --popover: 217 33% 17%;
-    --popover-foreground: 210 40% 98%;
+    --popover: 240 10% 18%;
+    --popover-foreground: 240 10% 95%;
 
-    --primary: 221 83% 53%;
+    /* Professional primary - Vibrant Purple */
+    --primary: 263 100% 58%;
     --primary-foreground: 0 0% 100%;
-    --primary-glow: 221 83% 70%;
+    --primary-glow: 263 100% 70%;
 
-    --secondary: 217 33% 17%;
-    --secondary-foreground: 210 40% 98%;
+    /* Gradient color stops for dark mode text */
+    --gradient-start: 263 100% 58%;
+    --gradient-mid: 200 100% 60%;
+    --gradient-end: 280 80% 60%;
 
-    --muted: 217 33% 17%;
-    --muted-foreground: 215 20% 65%;
+    --secondary: 240 10% 25%;
+    --secondary-foreground: 240 10% 95%;
 
-    --accent: 221 83% 53%;
+    --muted: 240 10% 30%;
+    --muted-foreground: 240 10% 70%;
+
+    --accent: 20 95% 65%;
     --accent-foreground: 0 0% 100%;
 
     --success: 142 76% 36%;
@@ -104,29 +126,39 @@ All colors MUST be HSL.
     --destructive: 0 63% 31%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 217 33% 17%;
-    --input: 217 33% 17%;
-    --ring: 221 83% 53%;
+    --border: 240 10% 25%;
+    --input: 240 10% 25%;
+    --ring: 241 100% 55%;
 
-    --chart-1: 221 83% 53%;
-    --chart-2: 142 76% 36%;
-    --chart-3: 38 92% 50%;
-    --chart-4: 280 80% 60%;
-    --chart-5: 340 75% 55%;
+    --chart-1: 241 100% 55%;
+    --chart-2: 20 95% 65%;
+    --chart-3: 180 85% 60%;
+    --chart-4: 330 85% 70%;
+    --chart-5: 60 90% 65%;
 
-    /* Gradients */
-    --gradient-primary: linear-gradient(135deg, hsl(221 83% 53%), hsl(221 83% 70%));
-    --gradient-success: linear-gradient(135deg, hsl(142 76% 36%), hsl(142 76% 50%));
-    --gradient-card: linear-gradient(145deg, hsl(217 33% 17%), hsl(217 33% 15%));
-    --gradient-subtle: linear-gradient(180deg, hsl(222 47% 11%), hsl(220 47% 9%));
+    /* Simple solid dark gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(241 100% 55%), hsl(241 100% 55%));
+    --gradient-success: linear-gradient(135deg, hsl(142 76% 36%), hsl(142 76% 36%));
+    --gradient-card: linear-gradient(145deg, hsl(240 10% 18%), hsl(240 10% 18%));
+    --gradient-subtle: linear-gradient(180deg, hsl(240 10% 10%), hsl(240 10% 10%));
 
-    /* Shadows */
-    --shadow-sm: 0 2px 4px -1px hsl(0 0% 0% / 0.3);
-    --shadow-md: 0 4px 12px -2px hsl(0 0% 0% / 0.4);
-    --shadow-lg: 0 10px 30px -5px hsl(0 0% 0% / 0.5);
-    --shadow-xl: 0 20px 40px -10px hsl(0 0% 0% / 0.6);
-    --shadow-glow: 0 0 20px hsl(221 83% 53% / 0.5);
-    --shadow-success-glow: 0 0 20px hsl(142 76% 36% / 0.5);
+    /* Simple clean dark background */
+    --gradient-bg-main: linear-gradient(-45deg, hsl(240 10% 10%), hsl(240 10% 10%), hsl(240 10% 10%), hsl(240 10% 10%));
+    --gradient-glass: linear-gradient(135deg, rgba(255 255 255 / 0.1), rgba(255 255 255 / 0.02));
+    --gradient-glass-dark: linear-gradient(135deg, rgba(65 105 225 / 0.08), rgba(65 105 225 / 0.02));
+
+    /* Shadows - Dark Theme */
+    --shadow-sm: 0 1px 2px -1px hsl(0 0% 0% / 0.3);
+    --shadow-md: 0 2px 4px -2px hsl(0 0% 0% / 0.4);
+    --shadow-lg: 0 4px 8px -4px hsl(0 0% 0% / 0.5);
+    --shadow-xl: 0 8px 16px -8px hsl(0 0% 0% / 0.6);
+    --shadow-glow: 0 0 20px hsl(241 100% 55% / 0.4);
+    --shadow-success-glow: 0 0 20px hsl(142 76% 36% / 0.4);
+
+    /* Subtle shadows - dark theme glass effect */
+    --shadow-glass-sm: 0 2px 8px 0 rgba(0, 0, 0, 0.3);
+    --shadow-glass-md: 0 4px 12px 0 rgba(0, 0, 0, 0.4);
+    --shadow-glass-lg: 0 8px 20px 0 rgba(0, 0, 0, 0.5);
 
     /* Transitions */
     --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -139,7 +171,46 @@ All colors MUST be HSL.
     @apply border-border;
   }
 
+  html, body {
+    @apply text-foreground;
+  }
+
   body {
-    @apply bg-background text-foreground;
+    background: var(--gradient-bg-main);
+    background-attachment: fixed;
+    background-size: 400% 400%;
+    animation: gradient-animation 15s ease infinite;
+    min-height: 100vh;
+    position: relative;
+    overflow-x: hidden;
+  }
+
+  /* No animated orbs - clean minimal design */
+
+  /* Glassy effect utilities */
+  .glass {
+    background: var(--gradient-glass);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+  }
+
+  .glass-dark {
+    background: var(--gradient-glass-dark);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .shadow-glass {
+    box-shadow: var(--shadow-glass-md);
+  }
+
+  .shadow-glass-sm {
+    box-shadow: var(--shadow-glass-sm);
+  }
+
+  .shadow-glass-lg {
+    box-shadow: var(--shadow-glass-lg);
   }
 }
