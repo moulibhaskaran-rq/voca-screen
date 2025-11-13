@@ -1,4 +1,5 @@
 export type CandidateStatus = "pending" | "in-progress" | "completed" | "expired" | "failed";
+export type SeniorityLevel = "junior" | "mid" | "senior" | "lead" | "executive";
 
 export interface Candidate {
   id: string;
@@ -6,6 +7,7 @@ export interface Candidate {
   email: string;
   phone: string;
   position: string;
+  seniorityLevel: SeniorityLevel;
   status: CandidateStatus;
   interviewLink: string;
   linkExpiry: Date;

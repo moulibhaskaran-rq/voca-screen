@@ -1,131 +1,188 @@
-import { useState } from "react";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Upload, UserPlus } from "lucide-react";
-import { useToast } from "@/hooks/use-toast";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { UserPlus } from "lucide-react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { toast } from "sonner";
 
 interface UploadDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }
 
+const candidateSchema = z.object({
+  name: z.string().min(2, "Name must be at least 2 characters").max(100, "Name is too long"),
+  email: z.string().email("Invalid email address").max(255, "Email is too long"),
+  phone: z.string().min(10, "Phone number must be at least 10 digits").max(20, "Phone number is too long"),
+  position: z.string().min(2, "Position must be at least 2 characters").max(100, "Position is too long"),
+  seniorityLevel: z.enum(["junior", "mid", "senior", "lead", "executive"], {
+    required_error: "Please select a seniority level",
+  }),
+});
+
+type CandidateFormValues = z.infer<typeof candidateSchema>;
+
 export const UploadDialog = ({ open, onOpenChange }: UploadDialogProps) => {
-  const { toast } = useToast();
-  const [file, setFile] = useState<File | null>(null);
+  const form = useForm<CandidateFormValues>({
+    resolver: zodResolver(candidateSchema),
+    defaultValues: {
+      name: "",
+      email: "",
+      phone: "",
+      position: "",
+      seniorityLevel: undefined,
+    },
+  });
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      setFile(e.target.files[0]);
-    }
-  };
-
-  const handleBulkUpload = () => {
-    if (!file) {
-      toast({
-        title: "No file selected",
-        description: "Please select a CSV file to upload",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    toast({
-      title: "Upload successful",
-      description: `${file.name} has been uploaded and candidates are being processed.`,
+  const onSubmit = (data: CandidateFormValues) => {
+    toast.success("Candidate added successfully!", {
+      description: `${data.name} has been added as a ${data.seniorityLevel} ${data.position}.`,
     });
-    onOpenChange(false);
-  };
-
-  const handleSingleAdd = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const formData = new FormData(e.currentTarget);
-    
-    toast({
-      title: "Candidate added",
-      description: `${formData.get("name")} has been added successfully.`,
-    });
+    form.reset();
     onOpenChange(false);
   };
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[600px]">
+      <DialogContent className="sm:max-w-[550px] animate-scale-in">
         <DialogHeader>
-          <DialogTitle>Add Candidates</DialogTitle>
+          <DialogTitle className="text-2xl flex items-center gap-2">
+            <UserPlus className="w-6 h-6 text-primary" />
+            Add New Candidate
+          </DialogTitle>
           <DialogDescription>
-            Upload candidates in bulk via CSV or add individual candidates manually
+            Fill in the candidate details to add them to the recruitment pipeline
           </DialogDescription>
         </DialogHeader>
 
-        <Tabs defaultValue="bulk" className="w-full">
-          <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="bulk">Bulk Upload</TabsTrigger>
-            <TabsTrigger value="single">Single Candidate</TabsTrigger>
-          </TabsList>
-
-          <TabsContent value="bulk" className="space-y-4">
-            <div className="border-2 border-dashed border-border rounded-lg p-8 text-center">
-              <Upload className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
-              <div className="space-y-2">
-                <p className="text-sm font-medium text-foreground">Upload CSV File</p>
-                <p className="text-xs text-muted-foreground">
-                  File should include: Name, Email, Phone, Position
-                </p>
-              </div>
-              <Input
-                type="file"
-                accept=".csv"
-                onChange={handleFileChange}
-                className="mt-4 max-w-xs mx-auto"
-              />
-              {file && (
-                <p className="text-sm text-primary mt-2">Selected: {file.name}</p>
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5 animate-fade-in">
+            <FormField
+              control={form.control}
+              name="name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Full Name *</FormLabel>
+                  <FormControl>
+                    <Input 
+                      placeholder="John Doe" 
+                      {...field} 
+                      className="transition-all focus:ring-2 focus:ring-primary/20"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
               )}
-            </div>
-            <div className="flex justify-end gap-3">
-              <Button variant="outline" onClick={() => onOpenChange(false)}>
+            />
+
+            <FormField
+              control={form.control}
+              name="email"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Email Address *</FormLabel>
+                  <FormControl>
+                    <Input 
+                      type="email"
+                      placeholder="john@example.com" 
+                      {...field} 
+                      className="transition-all focus:ring-2 focus:ring-primary/20"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="phone"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Phone Number *</FormLabel>
+                  <FormControl>
+                    <Input 
+                      type="tel"
+                      placeholder="+1 (555) 123-4567" 
+                      {...field} 
+                      className="transition-all focus:ring-2 focus:ring-primary/20"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="position"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Position *</FormLabel>
+                  <FormControl>
+                    <Input 
+                      placeholder="Software Engineer" 
+                      {...field} 
+                      className="transition-all focus:ring-2 focus:ring-primary/20"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="seniorityLevel"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Seniority Level *</FormLabel>
+                  <Select onValueChange={field.onChange} defaultValue={field.value}>
+                    <FormControl>
+                      <SelectTrigger className="transition-all focus:ring-2 focus:ring-primary/20">
+                        <SelectValue placeholder="Select seniority level" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      <SelectItem value="junior">Junior</SelectItem>
+                      <SelectItem value="mid">Mid-Level</SelectItem>
+                      <SelectItem value="senior">Senior</SelectItem>
+                      <SelectItem value="lead">Lead</SelectItem>
+                      <SelectItem value="executive">Executive</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <div className="flex justify-end gap-3 pt-4">
+              <Button 
+                type="button" 
+                variant="outline" 
+                onClick={() => {
+                  form.reset();
+                  onOpenChange(false);
+                }}
+                className="hover:scale-105 transition-transform"
+              >
                 Cancel
               </Button>
-              <Button onClick={handleBulkUpload}>
-                <Upload className="w-4 h-4 mr-2" />
-                Upload Candidates
+              <Button 
+                type="submit"
+                className="bg-gradient-to-r from-primary to-primary-glow hover:shadow-glow-md transition-all"
+              >
+                <UserPlus className="w-4 h-4 mr-2" />
+                Add Candidate
               </Button>
             </div>
-          </TabsContent>
-
-          <TabsContent value="single">
-            <form onSubmit={handleSingleAdd} className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="name">Full Name</Label>
-                <Input id="name" name="name" placeholder="John Doe" required />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
-                <Input id="email" name="email" type="email" placeholder="john@example.com" required />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="phone">Phone</Label>
-                <Input id="phone" name="phone" type="tel" placeholder="+1 (555) 123-4567" required />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="position">Position</Label>
-                <Input id="position" name="position" placeholder="Software Engineer" required />
-              </div>
-              <div className="flex justify-end gap-3">
-                <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
-                  Cancel
-                </Button>
-                <Button type="submit">
-                  <UserPlus className="w-4 h-4 mr-2" />
-                  Add Candidate
-                </Button>
-              </div>
-            </form>
-          </TabsContent>
-        </Tabs>
+          </form>
+        </Form>
       </DialogContent>
     </Dialog>
   );

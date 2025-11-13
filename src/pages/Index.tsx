@@ -3,11 +3,9 @@ import { Header } from "@/components/Header";
 import { StatsCards } from "@/components/StatsCards";
 import { CandidatesTable } from "@/components/CandidatesTable";
 import { UploadDialog } from "@/components/UploadDialog";
-import { CandidateDetailDialog } from "@/components/CandidateDetailDialog";
 import { Candidate } from "@/types/candidate";
 
 const Index = () => {
-  const [selectedCandidate, setSelectedCandidate] = useState<Candidate | null>(null);
   const [uploadDialogOpen, setUploadDialogOpen] = useState(false);
 
   // Mock data - in production, this would come from your backend
@@ -18,6 +16,7 @@ const Index = () => {
       email: "sarah.j@email.com",
       phone: "+1 (555) 123-4567",
       position: "Senior Frontend Developer",
+      seniorityLevel: "senior",
       status: "completed",
       interviewLink: "https://interview.ai/abc123",
       linkExpiry: new Date(Date.now() + 86400000),
@@ -33,6 +32,7 @@ const Index = () => {
       email: "m.chen@email.com",
       phone: "+1 (555) 234-5678",
       position: "Backend Engineer",
+      seniorityLevel: "mid",
       status: "in-progress",
       interviewLink: "https://interview.ai/def456",
       linkExpiry: new Date(Date.now() + 172800000),
@@ -44,6 +44,7 @@ const Index = () => {
       email: "emily.r@email.com",
       phone: "+1 (555) 345-6789",
       position: "Product Manager",
+      seniorityLevel: "lead",
       status: "pending",
       interviewLink: "https://interview.ai/ghi789",
       linkExpiry: new Date(Date.now() + 259200000),
@@ -55,6 +56,7 @@ const Index = () => {
       email: "j.wilson@email.com",
       phone: "+1 (555) 456-7890",
       position: "UX Designer",
+      seniorityLevel: "senior",
       status: "expired",
       interviewLink: "https://interview.ai/jkl012",
       linkExpiry: new Date(Date.now() - 86400000),
@@ -69,10 +71,6 @@ const Index = () => {
     pending: candidates.filter((c) => c.status === "pending").length,
   };
 
-  const handleCandidateClick = (candidate: Candidate) => {
-    setSelectedCandidate(candidate);
-  };
-
   const handleResendEmail = (candidateId: string) => {
     console.log("Resending email to candidate:", candidateId);
     // Implementation would trigger email resend
@@ -82,22 +80,23 @@ const Index = () => {
     <div className="min-h-screen bg-background">
       <Header onUploadClick={() => setUploadDialogOpen(true)} />
       
-      <main className="container mx-auto px-6 py-8">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-foreground mb-2">
+      <main className="container mx-auto px-6 py-8 animate-fade-in">
+        <div className="mb-8 animate-slide-in-from-top">
+          <h1 className="text-4xl font-bold text-foreground mb-2 bg-gradient-to-r from-primary to-primary-glow bg-clip-text text-transparent">
             AI Recruitment Dashboard
           </h1>
-          <p className="text-muted-foreground">
-            Track and manage candidate screening interviews
+          <p className="text-muted-foreground text-lg">
+            Track and manage candidate screening interviews with AI-powered insights
           </p>
         </div>
 
-        <StatsCards stats={stats} />
+        <div className="animate-slide-in-from-left">
+          <StatsCards stats={stats} />
+        </div>
 
-        <div className="mt-8">
+        <div className="mt-8 animate-slide-in-from-bottom">
           <CandidatesTable
             candidates={candidates}
-            onCandidateClick={handleCandidateClick}
             onResendEmail={handleResendEmail}
           />
         </div>
@@ -106,11 +105,6 @@ const Index = () => {
       <UploadDialog
         open={uploadDialogOpen}
         onOpenChange={setUploadDialogOpen}
-      />
-
-      <CandidateDetailDialog
-        candidate={selectedCandidate}
-        onClose={() => setSelectedCandidate(null)}
       />
     </div>
   );
