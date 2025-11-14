@@ -134,6 +134,8 @@ interface CandidatesListResponse {
       attachmentId: string | null;
       followUpDate: string | null;
       profilePictureUrl: string | null;
+      expiresIn?: string;
+      status?: string;
     }>;
     pagination: {
       limit: number;
@@ -147,8 +149,8 @@ interface CandidatesListResponse {
   };
 }
 
-export const getCandidates = async (): Promise<CandidatesListResponse> => {
-  const response = await apiGet<CandidatesListResponse>("/candidates");
+export const getCandidates = async (page: number = 1): Promise<CandidatesListResponse> => {
+  const response = await apiGet<CandidatesListResponse>(`/candidates?page=${page}&limit=6`);
   return response;
 };
 

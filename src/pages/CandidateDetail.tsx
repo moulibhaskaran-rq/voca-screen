@@ -364,39 +364,6 @@ const CandidateDetail = () => {
             </div>
           </Card>
 
-          {/* Interview Link Card */}
-          <Card className="p-6 glass backdrop-blur-xl rounded-3xl transition-all duration-300 animate-slide-in-from-left border-2 border-white/30">
-            <h3 className="text-lg font-bold text-foreground mb-4 flex items-center gap-2 tracking-tight">
-              <div className="p-3 bg-primary/20 rounded-xl">
-                <LinkIcon className="w-5 h-5 text-foreground" />
-              </div>
-              Interview Link
-            </h3>
-            <div className="flex items-center gap-3 group">
-              <code className="flex-1 text-sm glass rounded-2xl px-4 py-3 border border-white/20 group-hover:border-primary/40 transition-all font-mono backdrop-blur-md">
-                {candidate.interviewLink}
-              </code>
-              <Button
-                size="sm"
-                variant="outline"
-                onClick={handleCopyLink}
-                className="transition-all duration-200 border border-white/20 gap-1 rounded-xl glass backdrop-blur-md cursor-pointer text-foreground hover:text-foreground"
-              >
-                {copied ? (
-                  <>
-                    <Check className="w-4 h-4 text-success animate-pop" />
-                    Copied
-                  </>
-                ) : (
-                  <>
-                    <Copy className="w-4 h-4" />
-                    Copy
-                  </>
-                )}
-              </Button>
-            </div>
-          </Card>
-
           {/* AI Summary Card */}
           {candidate.summary && (
             <Card className="p-6 glass backdrop-blur-xl rounded-3xl transition-all duration-300 animate-slide-in-from-right border-l-4 border-l-success border-2 border-white/30">

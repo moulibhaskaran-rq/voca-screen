@@ -3,7 +3,7 @@
  * Handles all HTTP requests to the backend API
  */
 
-const API_BASE_URL = "https://1a99323395dc.ngrok-free.app/api/v1";
+const API_BASE_URL = "http://localhost:8081/api/v1";
 
 class ApiError extends Error {
   constructor(public status: number, message: string) {

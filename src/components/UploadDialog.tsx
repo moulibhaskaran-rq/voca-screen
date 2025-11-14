@@ -642,63 +642,62 @@ export const UploadDialog = ({ open, onOpenChange, onCandidateAdded }: UploadDia
                   </FormItem>
                 )}
               />
-            </div>
-
-            {/* Seniority Level Field - Full Width */}
-            <FormField
-              control={form.control}
-              name="seniorityLevel"
-              render={({ field, fieldState }) => (
-                <FormItem
-                  className="animate-slide-up"
-                  style={{ animationDelay: "300ms" }}
-                >
-                  <FormLabel className="flex items-center gap-2 font-semibold">
-                    <Award className="w-4 h-4 text-foreground" />
-                    Seniority Level
-                    <span className="text-destructive">*</span>
-                  </FormLabel>
-                  <Select
-                    onValueChange={field.onChange}
-                    value={field.value || ""}
-                    disabled={isSubmitting}
+              {/* Seniority Level Field */}
+              <FormField
+                control={form.control}
+                name="seniorityLevel"
+                render={({ field, fieldState }) => (
+                  <FormItem
+                    className="animate-slide-up"
+                    style={{ animationDelay: "300ms" }}
                   >
-                    <FormControl>
-                      <SelectTrigger
-                        className={`transition-all duration-300 focus:ring-2 focus:ring-primary/50 border-2 ${
-                          fieldState.invalid && field.value
-                            ? "border-destructive/50"
-                            : "border-border"
-                        } hover:border-primary/50`}
-                      >
-                        <SelectValue placeholder="Select seniority level" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent className="animate-expand">
-                      <SelectItem value="junior">
-                        <span className="flex items-center gap-2">
-                          <div className="w-2 h-2 rounded-full bg-blue-500" />
-                          Junior
-                        </span>
-                      </SelectItem>
-                      <SelectItem value="mid-senior">
-                        <span className="flex items-center gap-2">
-                          <div className="w-2 h-2 rounded-full bg-purple-500" />
-                          Mid-Senior
-                        </span>
-                      </SelectItem>
-                      <SelectItem value="senior">
-                        <span className="flex items-center gap-2">
-                          <div className="w-2 h-2 rounded-full bg-orange-500" />
-                          Senior
-                        </span>
-                      </SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <FormMessage className="animate-slide-up text-xs" />
-                </FormItem>
-              )}
-            />
+                    <FormLabel className="flex items-center gap-2 font-semibold">
+                      <Award className="w-4 h-4 text-foreground" />
+                      Seniority Level
+                      <span className="text-destructive">*</span>
+                    </FormLabel>
+                    <Select
+                      onValueChange={field.onChange}
+                      value={field.value || ""}
+                      disabled={isSubmitting}
+                    >
+                      <FormControl>
+                        <SelectTrigger
+                          className={`transition-all duration-300 focus:ring-2 focus:ring-primary/50 border-2 ${
+                            fieldState.invalid && field.value
+                              ? "border-destructive/50"
+                              : "border-border"
+                          } hover:border-primary/50`}
+                        >
+                          <SelectValue placeholder="Select seniority level" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent className="animate-expand">
+                        <SelectItem value="junior">
+                          <span className="flex items-center gap-2">
+                            <div className="w-2 h-2 rounded-full bg-blue-500" />
+                            Junior
+                          </span>
+                        </SelectItem>
+                        <SelectItem value="mid-senior">
+                          <span className="flex items-center gap-2">
+                            <div className="w-2 h-2 rounded-full bg-purple-500" />
+                            Mid-Senior
+                          </span>
+                        </SelectItem>
+                        <SelectItem value="senior">
+                          <span className="flex items-center gap-2">
+                            <div className="w-2 h-2 rounded-full bg-orange-500" />
+                            Senior
+                          </span>
+                        </SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <FormMessage className="animate-slide-up text-xs" />
+                  </FormItem>
+                )}
+              />
+            </div>
 
             {/* Action Buttons */}
             <div className="flex justify-end gap-3 pt-6 animate-slide-up border-t border-border/50 mt-6">

@@ -11,6 +11,7 @@ export interface Candidate {
   status: CandidateStatus;
   interviewLink: string;
   linkExpiry: Date;
+  expiresIn?: string;
   emailSentAt?: Date;
   interviewCompletedAt?: Date;
   transcript?: string;

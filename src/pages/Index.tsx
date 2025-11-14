@@ -3,7 +3,7 @@ import { Header } from "@/components/Header";
 import { StatsCards } from "@/components/StatsCards";
 import { CandidatesTable } from "@/components/CandidatesTable";
 import { UploadDialog } from "@/components/UploadDialog";
-import { Candidate } from "@/types/candidate";
+import { Candidate, CandidateStatus, SeniorityLevel } from "@/types/candidate";
 import { Mail } from "lucide-react";
 import { toast } from "sonner";
 import { getCandidates } from "@/services/candidate";
@@ -25,39 +25,110 @@ const Index = () => {
     null
   );
   const [candidates, setCandidates] = useState<Candidate[]>([]);
+  const [pagination, setPagination] = useState<{
+    limit: number;
+    page: number;
+    overallPages: number;
+    overallCount: number;
+    previousPage: number | null;
+    currentPage: number;
+    nextPage: number | null;
+  } | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
   const [isLoading, setIsLoading] = useState(true);
 
   // Fetch candidates from API
-  useEffect(() => {
-    const fetchCandidates = async () => {
-      try {
-        setIsLoading(true);
-        const response = await getCandidates();
+  const fetchCandidates = async (page: number = 1) => {
+    try {
+      setIsLoading(true);
+      const response = await getCandidates(page);
+      const prospects = response?.data?.prospects ?? [];
 
-        // Map API response to Candidate type
-        const mappedCandidates: Candidate[] = response.data.prospects.map((prospect) => ({
+      // Map API response to Candidate type
+      const mappedCandidates: Candidate[] = prospects.map((prospect) => {
+        // Parse the expiresIn string to calculate expiry date
+        // expiresIn format: "1 day", "2 days", "5 hours", etc.
+        const expiryDate = new Date();
+
+        if (prospect.expiresIn) {
+          const text = prospect.expiresIn.toLowerCase().trim();
+          // Parse "1 day", "2 days", "5 hours", etc.
+          const match = text.match(
+            /(\d+)\s+(day|days|hour|hours|minute|minutes|week|weeks)/i
+          );
+
+          if (match) {
+            const value = parseInt(match[1]);
+            const unit = match[2].toLowerCase();
+
+            switch (unit) {
+              case "day":
+              case "days":
+                expiryDate.setDate(expiryDate.getDate() + value);
+                break;
+              case "hour":
+              case "hours":
+                expiryDate.setHours(expiryDate.getHours() + value);
+                break;
+              case "minute":
+              case "minutes":
+                expiryDate.setMinutes(expiryDate.getMinutes() + value);
+                break;
+              case "week":
+              case "weeks":
+                expiryDate.setDate(expiryDate.getDate() + value * 7);
+                break;
+            }
+          }
+        }
+
+        // Map API status to candidate status type
+        const statusMap: Record<string, CandidateStatus> = {
+          pending: "pending",
+          "in-progress": "in-progress",
+          in_progress: "in-progress",
+          completed: "completed",
+          expired: "expired",
+          failed: "failed",
+        };
+
+        const candidateStatus =
+          (prospect.status && statusMap[prospect.status.toLowerCase()]) ||
+          "pending";
+
+        const seniority =
+          (prospect.seniorityLevel &&
+            (prospect.seniorityLevel.toLowerCase() as SeniorityLevel)) ||
+          "junior";
+
+        return {
           id: prospect.id || prospect._id,
-          name: prospect.fullName,
-          email: prospect.email,
-          phone: prospect.contactNumber,
-          position: prospect.position,
-          seniorityLevel: prospect.seniorityLevel,
-          status: "pending",
+          name: prospect.fullName || "-",
+          email: prospect.email || "-",
+          phone: prospect.contactNumber || "-",
+          position: prospect.position || "-",
+          seniorityLevel: seniority,
+          status: candidateStatus,
           interviewLink: "",
-          linkExpiry: new Date(),
-        }));
+          linkExpiry: expiryDate,
+          expiresIn: prospect.expiresIn || "-", // Store the original expiresIn string
+        };
+      });
 
-        setCandidates(mappedCandidates);
-      } catch (error) {
-        // Silently fail if backend is not available
-        // Don't show error toast or console error on initial load
-        setCandidates([]);
-      } finally {
-        setIsLoading(false);
-      }
-    };
+      setCandidates(mappedCandidates);
+      setPagination(response?.data?.pagination ?? null);
+    } catch (error) {
+      // Silently fail if backend is not available
+      // Don't show error toast or console error on initial load
+      setCandidates([]);
+      setPagination(null);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
-    fetchCandidates();
+  useEffect(() => {
+    fetchCandidates(1);
   }, []);
 
   const stats = {
@@ -121,6 +192,12 @@ const Index = () => {
           <CandidatesTable
             candidates={candidates}
             onResendEmail={handleResendEmail}
+            pagination={pagination}
+            isLoading={isLoading}
+            onPageChange={(page) => {
+              setCurrentPage(page);
+              fetchCandidates(page);
+            }}
           />
         </div>
       </main>
@@ -128,30 +205,7 @@ const Index = () => {
       <UploadDialog
         open={uploadDialogOpen}
         onOpenChange={setUploadDialogOpen}
-        onCandidateAdded={() => {
-          // Refresh candidates list
-          const fetchCandidates = async () => {
-            try {
-              const response = await getCandidates();
-              const mappedCandidates: Candidate[] = response.data.prospects.map((prospect) => ({
-                id: prospect.id || prospect._id,
-                name: prospect.fullName,
-                email: prospect.email,
-                phone: prospect.contactNumber,
-                position: prospect.position,
-                seniorityLevel: prospect.seniorityLevel,
-                status: "pending",
-                interviewLink: "",
-                linkExpiry: new Date(),
-              }));
-              setCandidates(mappedCandidates);
-            } catch (error) {
-              // Silently fail if backend is not available
-              setCandidates([]);
-            }
-          };
-          fetchCandidates();
-        }}
+        onCandidateAdded={() => fetchCandidates(currentPage)}
       />
 
       {/* Resend Email Confirmation Dialog */}

@@ -23,9 +23,22 @@ import { Candidate, CandidateStatus } from "@/types/candidate";
 import { formatDistanceToNow } from "date-fns";
 import { useNavigate } from "react-router-dom";
 
+interface PaginationInfo {
+  limit: number;
+  page: number;
+  overallPages: number;
+  overallCount: number;
+  previousPage: number | null;
+  currentPage: number;
+  nextPage: number | null;
+}
+
 interface CandidatesTableProps {
   candidates: Candidate[];
   onResendEmail: (candidateId: string) => void;
+  pagination?: PaginationInfo;
+  onPageChange?: (page: number) => void;
+  isLoading?: boolean;
 }
 
 type SortField =
@@ -77,12 +90,19 @@ const getStatusBadge = (status: CandidateStatus) => {
 export const CandidatesTable = ({
   candidates,
   onResendEmail,
+  pagination,
+  onPageChange,
+  isLoading = false,
 }: CandidatesTableProps) => {
   const navigate = useNavigate();
   const [sortField, setSortField] = useState<SortField | null>(null);
   const [sortDirection, setSortDirection] = useState<SortDirection>(null);
-  const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 10;
+  const [currentPage, setCurrentPage] = useState(pagination?.currentPage || 1);
+
+  // Use API pagination if available, otherwise use client-side pagination
+  const itemsPerPage = pagination?.limit || 10;
+  const totalPages = pagination?.overallPages || Math.ceil(candidates.length / itemsPerPage);
+  const totalCandidates = pagination?.overallCount || candidates.length;
 
   // Sorting logic
   const handleSort = (field: SortField) => {
@@ -135,19 +155,30 @@ export const CandidatesTable = ({
   });
 
   // Pagination logic
-  const totalPages = Math.ceil(sortedCandidates.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
-  const paginatedCandidates = sortedCandidates.slice(startIndex, endIndex);
+  const paginatedCandidates = pagination
+    ? candidates // Use candidates directly when using API pagination
+    : sortedCandidates.slice(startIndex, endIndex); // Use client-side pagination otherwise
 
   const goToPage = (page: number) => {
-    setCurrentPage(Math.max(1, Math.min(page, totalPages)));
+    const newPage = Math.max(1, Math.min(page, totalPages));
+    setCurrentPage(newPage);
+
+    // Call API pagination callback if provided
+    if (onPageChange && pagination) {
+      onPageChange(newPage);
+    }
   };
 
-  const getSeniorityBadge = (level: string) => {
-    const colors = {
+  const getSeniorityBadge = (level: string | undefined) => {
+    if (!level) return "bg-gray-500/10 text-gray-600 dark:text-gray-400 border-gray-500/20";
+
+    const normalizedLevel = level.toLowerCase();
+    const colors: Record<string, string> = {
       junior:
         "bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20",
+      "mid-senior": "bg-purple-500/10 text-purple-600 dark:text-purple-400 border-purple-500/20",
       mid: "bg-purple-500/10 text-purple-600 dark:text-purple-400 border-purple-500/20",
       senior:
         "bg-orange-500/10 text-orange-600 dark:text-orange-400 border-orange-500/20",
@@ -155,11 +186,11 @@ export const CandidatesTable = ({
       executive:
         "bg-yellow-500/10 text-yellow-600 dark:text-yellow-400 border-yellow-500/20",
     };
-    return colors[level as keyof typeof colors] || colors.mid;
+    return colors[normalizedLevel] || colors.mid;
   };
 
   return (
-    <div className="glass backdrop-blur-xl border-2 border-primary/30 overflow-hidden transition-all duration-300 animate-fade-in" style={{ borderRadius: "1.5rem" }}>
+    <div className="glass backdrop-blur-xl border-2 border-primary/30 overflow-hidden transition-all duration-300 animate-fade-in flex flex-col" style={{ borderRadius: "1.5rem" }}>
       <div className="p-6 border-b-2 border-white/10 bg-primary/5 backdrop-blur-sm relative overflow-hidden">
         <div className="flex items-center justify-between relative z-10">
           <div>
@@ -172,7 +203,7 @@ export const CandidatesTable = ({
           </div>
           <div className="text-center glass rounded-2xl px-6 py-4 backdrop-blur-md border border-primary/20 hover:border-primary/40 transition-all duration-300">
             <p className="text-3xl font-bold text-foreground">
-              {candidates.length}
+              {totalCandidates}
             </p>
             <p className="text-xs text-muted-foreground font-medium">
               Total Candidates
@@ -181,7 +212,7 @@ export const CandidatesTable = ({
         </div>
       </div>
 
-      <Table>
+      <Table className="flex-grow">
         <TableHeader>
           <TableRow className="hover:bg-transparent border-b-2 border-border/50">
             <TableHead
@@ -223,24 +254,12 @@ export const CandidatesTable = ({
             </TableHead>
             <TableHead
               className="font-bold text-foreground cursor-pointer select-none"
-              onClick={() => handleSort("emailSentAt")}
-            >
-              <div className="flex items-center gap-2">
-                Email Sent
-                {getSortIcon("emailSentAt")}
-              </div>
-            </TableHead>
-            <TableHead
-              className="font-bold text-foreground cursor-pointer select-none"
               onClick={() => handleSort("linkExpiry")}
             >
               <div className="flex items-center gap-2">
                 Link Expiry
                 {getSortIcon("linkExpiry")}
               </div>
-            </TableHead>
-            <TableHead className="font-bold text-foreground w-[200px]">
-              Actions
             </TableHead>
           </TableRow>
         </TableHeader>
@@ -292,8 +311,10 @@ export const CandidatesTable = ({
                   variant="outline"
                 >
                   <Award className="w-3 h-3 mr-1" />
-                  {candidate.seniorityLevel.charAt(0).toUpperCase() +
-                    candidate.seniorityLevel.slice(1)}
+                  {candidate.seniorityLevel
+                    ? candidate.seniorityLevel.charAt(0).toUpperCase() +
+                      candidate.seniorityLevel.slice(1)
+                    : "N/A"}
                 </Badge>
               </TableCell>
               <TableCell className="text-muted-foreground text-sm group-hover:text-foreground transition-colors">
@@ -303,13 +324,6 @@ export const CandidatesTable = ({
                 <div className="inline-flex items-center gap-1 group/status">
                   {getStatusBadge(candidate.status)}
                 </div>
-              </TableCell>
-              <TableCell className="text-sm text-muted-foreground group-hover:text-foreground transition-colors">
-                {candidate.emailSentAt
-                  ? formatDistanceToNow(candidate.emailSentAt, {
-                      addSuffix: true,
-                    })
-                  : "-"}
               </TableCell>
               <TableCell className="text-sm text-muted-foreground group-hover:text-foreground transition-colors">
                 <span
@@ -325,14 +339,7 @@ export const CandidatesTable = ({
                 </span>
               </TableCell>
               <TableCell>
-                <div
-                  className={`flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 ${
-                    candidate.status === "expired" ||
-                    candidate.status === "failed"
-                      ? "justify-end"
-                      : "justify-start"
-                  }`}
-                >
+                <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 justify-start">
                   <Button
                     variant="ghost"
                     size="sm"
@@ -364,7 +371,8 @@ export const CandidatesTable = ({
               </TableCell>
             </TableRow>
             );
-          })}
+          })
+          }
         </TableBody>
       </Table>
 
@@ -373,8 +381,8 @@ export const CandidatesTable = ({
         <div className="flex items-center justify-between p-6 border-t border-white/10 bg-primary/5">
           <div className="text-sm text-muted-foreground">
             Showing {startIndex + 1} to{" "}
-            {Math.min(endIndex, sortedCandidates.length)} of{" "}
-            {sortedCandidates.length} candidates
+            {Math.min(endIndex, totalCandidates)} of{" "}
+            {totalCandidates} candidates
           </div>
           <div className="flex items-center gap-2">
             <Button
