@@ -21,6 +21,7 @@ import {
   Phone,
   Briefcase,
   Award,
+  Paperclip,
 } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -28,17 +29,21 @@ import { z } from "zod";
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
 import { toast } from "sonner";
-import { useState } from "react";
+import { useRef, useState } from "react";
+import { addCandidate, AddCandidateError } from "@/services/candidate";
+import { ApiError } from "@/services/api";
 
 interface UploadDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  onCandidateAdded?: () => void;
 }
 
 const candidateSchema = z.object({
@@ -61,15 +66,23 @@ const candidateSchema = z.object({
     .string()
     .min(2, "Position must be at least 2 characters")
     .max(100, "Position is too long"),
-  seniorityLevel: z.enum(["junior", "mid", "senior", "lead", "executive"], {
+  seniorityLevel: z.enum(["junior", "mid-senior", "senior"], {
     errorMap: () => ({ message: "Please select a seniority level" }),
   }),
+  resume: z
+    .instanceof(File, { message: "Please upload a valid PDF file" })
+    .refine(
+      (file) => file.type === "application/pdf",
+      "Only PDF files are allowed"
+    )
+    .refine((file) => file.size <= 5 * 1024 * 1024, "File must be 5MB or less"),
 });
 
 type CandidateFormValues = z.infer<typeof candidateSchema>;
 
-export const UploadDialog = ({ open, onOpenChange }: UploadDialogProps) => {
+export const UploadDialog = ({ open, onOpenChange, onCandidateAdded }: UploadDialogProps) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   const form = useForm<CandidateFormValues>({
     resolver: zodResolver(candidateSchema),
@@ -83,14 +96,48 @@ export const UploadDialog = ({ open, onOpenChange }: UploadDialogProps) => {
     mode: "onChange",
   });
 
+  const resetForm = () => {
+    form.reset();
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
+  };
+
+  const fileToBase64 = (file: File) => {
+    return new Promise<string>((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => {
+        const result = reader.result;
+        if (typeof result === "string") {
+          const base64 = result.split(",")[1] ?? "";
+          resolve(base64);
+        } else {
+          reject(new Error("Could not read file"));
+        }
+      };
+      reader.onerror = () => reject(new Error("Failed to read file"));
+      reader.readAsDataURL(file);
+    });
+  };
+
   const onSubmit = async (data: CandidateFormValues) => {
     setIsSubmitting(true);
     try {
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      const resumeBase64 = data.resume ? await fileToBase64(data.resume) : undefined;
 
-      toast.success("Candidate added successfully!", {
-        description: `${data.name} (${data.seniorityLevel}) is now in the pipeline`,
+      const candidate = await addCandidate(
+        data.name,
+        data.email,
+        data.phone,
+        data.position,
+        data.seniorityLevel,
+        resumeBase64
+      );
+
+      // Use the API message for the success toast
+      const successMessage = candidate.apiMessage || "Candidate added successfully!";
+      toast.success(successMessage, {
+        description: `${candidate.name} has been added to the pipeline`,
         duration: 3000,
         closeButton: true,
         icon: (
@@ -99,11 +146,25 @@ export const UploadDialog = ({ open, onOpenChange }: UploadDialogProps) => {
           </div>
         ),
       });
-      form.reset();
+      resetForm();
       onOpenChange(false);
+      // Refresh candidates list after adding
+      if (onCandidateAdded) {
+        onCandidateAdded();
+      }
     } catch (error) {
+      let errorMessage = "Please try again";
+
+      if (error instanceof AddCandidateError) {
+        errorMessage = error.apiMessage;
+      } else if (error instanceof ApiError) {
+        errorMessage = error.message;
+      } else if (error instanceof Error) {
+        errorMessage = error.message;
+      }
+
       toast.error("Failed to add candidate", {
-        description: "Please try again",
+        description: errorMessage,
       });
     } finally {
       setIsSubmitting(false);
@@ -312,10 +373,10 @@ export const UploadDialog = ({ open, onOpenChange }: UploadDialogProps) => {
                           Junior
                         </span>
                       </SelectItem>
-                      <SelectItem value="mid">
+                      <SelectItem value="mid-senior">
                         <span className="flex items-center gap-2">
                           <div className="w-2 h-2 rounded-full bg-purple-500" />
-                          Mid-Level
+                          Mid-Senior
                         </span>
                       </SelectItem>
                       <SelectItem value="senior">
@@ -324,20 +385,50 @@ export const UploadDialog = ({ open, onOpenChange }: UploadDialogProps) => {
                           Senior
                         </span>
                       </SelectItem>
-                      <SelectItem value="lead">
-                        <span className="flex items-center gap-2">
-                          <div className="w-2 h-2 rounded-full bg-pink-500" />
-                          Lead
-                        </span>
-                      </SelectItem>
-                      <SelectItem value="executive">
-                        <span className="flex items-center gap-2">
-                          <div className="w-2 h-2 rounded-full bg-yellow-500" />
-                          Executive
-                        </span>
-                      </SelectItem>
                     </SelectContent>
                   </Select>
+                  <FormMessage className="animate-slide-up text-xs" />
+                </FormItem>
+              )}
+            />
+
+            {/* Resume Upload Field */}
+            <FormField
+              control={form.control}
+              name="resume"
+              render={({ field }) => (
+                <FormItem
+                  className="animate-slide-up"
+                  style={{ animationDelay: "300ms" }}
+                >
+                  <FormLabel className="flex items-center gap-2 font-semibold">
+                    <Paperclip className="w-4 h-4" />
+                    Resume / Portfolio
+                    <span className="text-destructive">*</span>
+                  </FormLabel>
+                  <FormControl>
+                    <div className="relative group">
+                      <Input
+                        type="file"
+                        accept="application/pdf"
+                        disabled={isSubmitting}
+                        onChange={(event) =>
+                          field.onChange(event.target.files?.[0] ?? undefined)
+                        }
+                        onBlur={field.onBlur}
+                        name={field.name}
+                        ref={(element) => {
+                          field.ref(element);
+                          fileInputRef.current = element;
+                        }}
+                        className="transition-all duration-300 focus:ring-2 focus:ring-primary/50 border-2 border-border hover:border-primary/50 file:bg-transparent file:border-0 file:font-medium file:text-primary"
+                      />
+                    </div>
+                  </FormControl>
+                  <FormDescription className="text-xs text-muted-foreground">
+                    Upload a single PDF up to 5MB. File will be attached to the
+                    candidate profile.
+                  </FormDescription>
                   <FormMessage className="animate-slide-up text-xs" />
                 </FormItem>
               )}
@@ -348,7 +439,7 @@ export const UploadDialog = ({ open, onOpenChange }: UploadDialogProps) => {
               <button
                 type="button"
                 onClick={() => {
-                  form.reset();
+                  resetForm();
                   onOpenChange(false);
                 }}
                 disabled={isSubmitting}

@@ -1,5 +1,5 @@
 export type CandidateStatus = "pending" | "in-progress" | "completed" | "expired" | "failed";
-export type SeniorityLevel = "junior" | "mid" | "senior" | "lead" | "executive";
+export type SeniorityLevel = "junior" | "mid-senior" | "senior";
 
 export interface Candidate {
   id: string;

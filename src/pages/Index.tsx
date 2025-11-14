@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Header } from "@/components/Header";
 import { StatsCards } from "@/components/StatsCards";
 import { CandidatesTable } from "@/components/CandidatesTable";
@@ -6,6 +6,7 @@ import { UploadDialog } from "@/components/UploadDialog";
 import { Candidate } from "@/types/candidate";
 import { Mail } from "lucide-react";
 import { toast } from "sonner";
+import { getCandidates } from "@/services/candidate";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -23,64 +24,42 @@ const Index = () => {
   const [selectedCandidateId, setSelectedCandidateId] = useState<string | null>(
     null
   );
+  const [candidates, setCandidates] = useState<Candidate[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
-  // Mock data - in production, this would come from your backend
-  const [candidates, setCandidates] = useState<Candidate[]>([
-    {
-      id: "1",
-      name: "Sarah Johnson",
-      email: "sarah.j@email.com",
-      phone: "+1 (555) 123-4567",
-      position: "Senior Frontend Developer",
-      seniorityLevel: "senior",
-      status: "completed",
-      interviewLink: "https://interview.ai/abc123",
-      linkExpiry: new Date(Date.now() + 86400000),
-      emailSentAt: new Date(Date.now() - 3600000),
-      interviewCompletedAt: new Date(Date.now() - 1800000),
-      transcript:
-        "AI: Hello Sarah, thank you for joining us today. Let's start with your experience...",
-      summary:
-        "Strong technical background with 6+ years in React. Excellent communication skills. Shows deep understanding of modern frontend architecture.",
-      score: 8.5,
-    },
-    {
-      id: "2",
-      name: "Michael Chen",
-      email: "m.chen@email.com",
-      phone: "+1 (555) 234-5678",
-      position: "Backend Engineer",
-      seniorityLevel: "mid",
-      status: "in-progress",
-      interviewLink: "https://interview.ai/def456",
-      linkExpiry: new Date(Date.now() + 172800000),
-      emailSentAt: new Date(Date.now() - 7200000),
-    },
-    {
-      id: "3",
-      name: "Emily Rodriguez",
-      email: "emily.r@email.com",
-      phone: "+1 (555) 345-6789",
-      position: "Product Manager",
-      seniorityLevel: "lead",
-      status: "pending",
-      interviewLink: "https://interview.ai/ghi789",
-      linkExpiry: new Date(Date.now() + 259200000),
-      emailSentAt: new Date(Date.now() - 300000),
-    },
-    {
-      id: "4",
-      name: "James Wilson",
-      email: "j.wilson@email.com",
-      phone: "+1 (555) 456-7890",
-      position: "UX Designer",
-      seniorityLevel: "senior",
-      status: "expired",
-      interviewLink: "https://interview.ai/jkl012",
-      linkExpiry: new Date(Date.now() - 86400000),
-      emailSentAt: new Date(Date.now() - 172800000),
-    },
-  ]);
+  // Fetch candidates from API
+  useEffect(() => {
+    const fetchCandidates = async () => {
+      try {
+        setIsLoading(true);
+        const response = await getCandidates();
+
+        // Map API response to Candidate type
+        const mappedCandidates: Candidate[] = response.data.prospects.map((prospect) => ({
+          id: prospect.id || prospect._id,
+          name: prospect.fullName,
+          email: prospect.email,
+          phone: prospect.contactNumber,
+          position: prospect.position,
+          seniorityLevel: prospect.seniorityLevel,
+          status: "pending",
+          interviewLink: "",
+          linkExpiry: new Date(),
+        }));
+
+        setCandidates(mappedCandidates);
+      } catch (error) {
+        console.error("Failed to fetch candidates:", error);
+        toast.error("Failed to load candidates", {
+          description: "Please try refreshing the page",
+        });
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchCandidates();
+  }, []);
 
   const stats = {
     total: candidates.length,
@@ -150,6 +129,29 @@ const Index = () => {
       <UploadDialog
         open={uploadDialogOpen}
         onOpenChange={setUploadDialogOpen}
+        onCandidateAdded={() => {
+          // Refresh candidates list
+          const fetchCandidates = async () => {
+            try {
+              const response = await getCandidates();
+              const mappedCandidates: Candidate[] = response.data.prospects.map((prospect) => ({
+                id: prospect.id || prospect._id,
+                name: prospect.fullName,
+                email: prospect.email,
+                phone: prospect.contactNumber,
+                position: prospect.position,
+                seniorityLevel: prospect.seniorityLevel,
+                status: "pending",
+                interviewLink: "",
+                linkExpiry: new Date(),
+              }));
+              setCandidates(mappedCandidates);
+            } catch (error) {
+              console.error("Failed to refresh candidates:", error);
+            }
+          };
+          fetchCandidates();
+        }}
       />
 
       {/* Resend Email Confirmation Dialog */}
