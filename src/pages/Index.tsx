@@ -49,10 +49,9 @@ const Index = () => {
 
         setCandidates(mappedCandidates);
       } catch (error) {
-        console.error("Failed to fetch candidates:", error);
-        toast.error("Failed to load candidates", {
-          description: "Please try refreshing the page",
-        });
+        // Silently fail if backend is not available
+        // Don't show error toast or console error on initial load
+        setCandidates([]);
       } finally {
         setIsLoading(false);
       }
@@ -147,7 +146,8 @@ const Index = () => {
               }));
               setCandidates(mappedCandidates);
             } catch (error) {
-              console.error("Failed to refresh candidates:", error);
+              // Silently fail if backend is not available
+              setCandidates([]);
             }
           };
           fetchCandidates();
