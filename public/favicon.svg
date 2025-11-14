@@ -1,0 +1,33 @@
+<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="yellowGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFE614;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#FFC700;stop-opacity:1" />
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="1.5" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- Background rounded rectangle -->
+  <rect width="64" height="64" rx="14" fill="url(#yellowGrad)"/>
+
+  <!-- Microphone icon -->
+  <g transform="translate(20, 12)" filter="url(#glow)">
+    <!-- Microphone capsule -->
+    <rect x="6" y="0" width="12" height="18" rx="6" fill="#1a1a1a" stroke="#1a1a1a" stroke-width="1.5"/>
+
+    <!-- Microphone stand curve -->
+    <path d="M 12 18 L 12 24 M 6 28 L 18 28 M 12 24 L 12 28" stroke="#1a1a1a" stroke-width="2" stroke-linecap="round" fill="none"/>
+
+    <!-- Sound waves -->
+    <path d="M 0 12 Q 0 6, 3 6" stroke="#1a1a1a" stroke-width="1.5" stroke-linecap="round" fill="none" opacity="0.7"/>
+    <path d="M 24 12 Q 24 6, 21 6" stroke="#1a1a1a" stroke-width="1.5" stroke-linecap="round" fill="none" opacity="0.7"/>
+    <path d="M 0 12 Q 0 18, 3 18" stroke="#1a1a1a" stroke-width="1.5" stroke-linecap="round" fill="none" opacity="0.7"/>
+    <path d="M 24 12 Q 24 18, 21 18" stroke="#1a1a1a" stroke-width="1.5" stroke-linecap="round" fill="none" opacity="0.7"/>
+  </g>
+</svg>

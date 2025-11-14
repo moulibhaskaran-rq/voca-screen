@@ -4,9 +4,25 @@ import { StatsCards } from "@/components/StatsCards";
 import { CandidatesTable } from "@/components/CandidatesTable";
 import { UploadDialog } from "@/components/UploadDialog";
 import { Candidate } from "@/types/candidate";
+import { Mail } from "lucide-react";
+import { toast } from "sonner";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 const Index = () => {
   const [uploadDialogOpen, setUploadDialogOpen] = useState(false);
+  const [showResendDialog, setShowResendDialog] = useState(false);
+  const [selectedCandidateId, setSelectedCandidateId] = useState<string | null>(
+    null
+  );
 
   // Mock data - in production, this would come from your backend
   const [candidates, setCandidates] = useState<Candidate[]>([
@@ -22,8 +38,10 @@ const Index = () => {
       linkExpiry: new Date(Date.now() + 86400000),
       emailSentAt: new Date(Date.now() - 3600000),
       interviewCompletedAt: new Date(Date.now() - 1800000),
-      transcript: "AI: Hello Sarah, thank you for joining us today. Let's start with your experience...",
-      summary: "Strong technical background with 6+ years in React. Excellent communication skills. Shows deep understanding of modern frontend architecture.",
+      transcript:
+        "AI: Hello Sarah, thank you for joining us today. Let's start with your experience...",
+      summary:
+        "Strong technical background with 6+ years in React. Excellent communication skills. Shows deep understanding of modern frontend architecture.",
       score: 8.5,
     },
     {
@@ -72,8 +90,26 @@ const Index = () => {
   };
 
   const handleResendEmail = (candidateId: string) => {
-    console.log("Resending email to candidate:", candidateId);
-    // Implementation would trigger email resend
+    setSelectedCandidateId(candidateId);
+    setShowResendDialog(true);
+  };
+
+  const confirmResendEmail = () => {
+    if (selectedCandidateId) {
+      const candidate = candidates.find((c) => c.id === selectedCandidateId);
+      toast.success("Interview Link Resent", {
+        description: `Email sent to ${candidate?.name}`,
+        duration: 3000,
+        closeButton: true,
+        icon: (
+          <div className="w-10 h-10 rounded-full bg-warning/20 flex items-center justify-center border-2 border-warning/30">
+            <Mail className="w-5 h-5 text-warning" strokeWidth={2.5} />
+          </div>
+        ),
+      });
+      setShowResendDialog(false);
+      setSelectedCandidateId(null);
+    }
   };
 
   return (
@@ -84,31 +120,16 @@ const Index = () => {
         {/* Header Section */}
         <div className="mb-16 animate-slide-in-from-top space-y-6">
           <div className="space-y-4">
-            <h1 className="text-6xl md:text-7xl font-bold mb-4 text-foreground leading-tight">
-              AI Recruitment Dashboard
+            <h1 className="text-6xl md:text-7xl font-bold mb-4 leading-tight text-foreground">
+              Dashboard
             </h1>
-            <p className="text-muted-foreground/90 text-lg md:text-xl max-w-3xl font-light leading-relaxed">
-              Track and manage candidate screening interviews with AI-powered insights. Streamline your recruitment process with intelligent automation.
+            <p className="text-muted-foreground text-lg md:text-xl max-w-3xl font-light leading-relaxed">
+              Track and manage candidate screening interviews with{" "}
+              <span className="text-foreground font-semibold">
+                AI-powered insights
+              </span>
+              . Streamline your recruitment process with intelligent automation.
             </p>
-          </div>
-
-          {/* Quick Stats Row - Glassy */}
-          <div className="flex flex-wrap gap-4 pt-6">
-            <div className="glass backdrop-blur-md rounded-2xl px-5 py-3 border border-white/20 animate-bounce-in hover:shadow-glass-sm transition-all duration-300">
-              <p className="text-sm font-semibold text-primary">
-                ✨ AI-Powered Screening
-              </p>
-            </div>
-            <div className="glass backdrop-blur-md rounded-2xl px-5 py-3 border border-white/20 animate-bounce-in hover:shadow-glass-sm transition-all duration-300" style={{ animationDelay: "100ms" }}>
-              <p className="text-sm font-semibold text-success">
-                🚀 {stats.completed} Completed Interviews
-              </p>
-            </div>
-            <div className="glass backdrop-blur-md rounded-2xl px-5 py-3 border border-white/20 animate-bounce-in hover:shadow-glass-sm transition-all duration-300" style={{ animationDelay: "200ms" }}>
-              <p className="text-sm font-semibold text-warning">
-                ⏳ {stats.inProgress} In Progress
-              </p>
-            </div>
           </div>
         </div>
 
@@ -130,6 +151,40 @@ const Index = () => {
         open={uploadDialogOpen}
         onOpenChange={setUploadDialogOpen}
       />
+
+      {/* Resend Email Confirmation Dialog */}
+      <AlertDialog open={showResendDialog} onOpenChange={setShowResendDialog}>
+        <AlertDialogContent className="border-warning/30">
+          <AlertDialogHeader>
+            <div className="mx-auto mb-2 w-20 h-20 rounded-full bg-warning/20 flex items-center justify-center border-2 border-warning/30 relative">
+              <div className="absolute inset-0 rounded-full bg-warning/5 animate-ping"></div>
+              <Mail
+                className="w-10 h-10 text-warning relative z-10"
+                strokeWidth={2.5}
+              />
+            </div>
+            <AlertDialogTitle className="text-foreground">
+              Resend Interview Link?
+            </AlertDialogTitle>
+            <AlertDialogDescription className="text-base">
+              {selectedCandidateId &&
+                `This will send a new interview link to ${
+                  candidates.find((c) => c.id === selectedCandidateId)?.name
+                }.`}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel className="flex-1">Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={confirmResendEmail}
+              className="bg-warning hover:bg-warning/90 text-white flex-1 transition-all"
+            >
+              <Mail className="w-4 h-4 mr-2" />
+              Resend Link
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };

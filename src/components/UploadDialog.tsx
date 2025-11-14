@@ -1,12 +1,38 @@
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { UserPlus, CheckCircle2, Mail, Phone, Briefcase, Award } from "lucide-react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  UserPlus,
+  CheckCircle2,
+  Mail,
+  Phone,
+  Briefcase,
+  Award,
+} from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 import { toast } from "sonner";
 import { useState } from "react";
 
@@ -16,19 +42,23 @@ interface UploadDialogProps {
 }
 
 const candidateSchema = z.object({
-  name: z.string()
+  name: z
+    .string()
     .min(2, "Name must be at least 2 characters")
     .max(100, "Name is too long")
     .regex(/^[a-zA-Z\s]+$/, "Name can only contain letters and spaces"),
-  email: z.string()
+  email: z
+    .string()
     .email("Please enter a valid email address")
     .max(255, "Email is too long")
     .toLowerCase(),
-  phone: z.string()
+  phone: z
+    .string()
     .regex(/^[\d\s\-+()]+$/, "Phone number contains invalid characters")
     .min(10, "Phone number must be at least 10 digits")
     .max(20, "Phone number is too long"),
-  position: z.string()
+  position: z
+    .string()
     .min(2, "Position must be at least 2 characters")
     .max(100, "Position is too long"),
   seniorityLevel: z.enum(["junior", "mid", "senior", "lead", "executive"], {
@@ -57,11 +87,17 @@ export const UploadDialog = ({ open, onOpenChange }: UploadDialogProps) => {
     setIsSubmitting(true);
     try {
       // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      await new Promise((resolve) => setTimeout(resolve, 1000));
 
-      toast.success("🎉 Candidate added successfully!", {
+      toast.success("Candidate added successfully!", {
         description: `${data.name} (${data.seniorityLevel}) is now in the pipeline`,
-        duration: 4000,
+        duration: 3000,
+        closeButton: true,
+        icon: (
+          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-success/20 to-success/10 flex items-center justify-center border-2 border-success/30">
+            <UserPlus className="w-5 h-5 text-success" strokeWidth={2.5} />
+          </div>
+        ),
       });
       form.reset();
       onOpenChange(false);
@@ -79,8 +115,8 @@ export const UploadDialog = ({ open, onOpenChange }: UploadDialogProps) => {
       <DialogContent className="sm:max-w-[550px] animate-pop glass backdrop-blur-xl border border-white/20 shadow-glass-xl rounded-3xl">
         <DialogHeader className="animate-slide-down">
           <DialogTitle className="text-3xl font-bold flex items-center gap-3">
-            <div className="p-3 bg-gradient-to-br from-primary/30 to-primary-glow/20 rounded-2xl shadow-glow-md">
-              <UserPlus className="w-6 h-6 text-primary" />
+            <div className="p-3 bg-primary/20 rounded-2xl">
+              <UserPlus className="w-6 h-6 text-foreground" />
             </div>
             Add Candidate
           </DialogTitle>
@@ -90,13 +126,19 @@ export const UploadDialog = ({ open, onOpenChange }: UploadDialogProps) => {
         </DialogHeader>
 
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5 animate-fade-in">
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="space-y-5 animate-fade-in"
+          >
             {/* Name Field */}
             <FormField
               control={form.control}
               name="name"
               render={({ field, fieldState }) => (
-                <FormItem className="animate-slide-up" style={{ animationDelay: "50ms" }}>
+                <FormItem
+                  className="animate-slide-up"
+                  style={{ animationDelay: "50ms" }}
+                >
                   <FormLabel className="flex items-center gap-2 font-semibold">
                     <span>Full Name</span>
                     <span className="text-destructive">*</span>
@@ -108,7 +150,9 @@ export const UploadDialog = ({ open, onOpenChange }: UploadDialogProps) => {
                         {...field}
                         disabled={isSubmitting}
                         className={`transition-all duration-300 focus:ring-2 focus:ring-primary/50 border-2 ${
-                          fieldState.invalid && field.value ? "border-destructive/50" : "border-border"
+                          fieldState.invalid && field.value
+                            ? "border-destructive/50"
+                            : "border-border"
                         } group-hover:border-primary/50`}
                       />
                       {!fieldState.invalid && field.value && (
@@ -126,9 +170,12 @@ export const UploadDialog = ({ open, onOpenChange }: UploadDialogProps) => {
               control={form.control}
               name="email"
               render={({ field, fieldState }) => (
-                <FormItem className="animate-slide-up" style={{ animationDelay: "100ms" }}>
+                <FormItem
+                  className="animate-slide-up"
+                  style={{ animationDelay: "100ms" }}
+                >
                   <FormLabel className="flex items-center gap-2 font-semibold">
-                    <Mail className="w-4 h-4" />
+                    <Mail className="w-4 h-4 text-foreground" />
                     Email Address
                     <span className="text-destructive">*</span>
                   </FormLabel>
@@ -140,7 +187,9 @@ export const UploadDialog = ({ open, onOpenChange }: UploadDialogProps) => {
                         {...field}
                         disabled={isSubmitting}
                         className={`transition-all duration-300 focus:ring-2 focus:ring-primary/50 border-2 ${
-                          fieldState.invalid && field.value ? "border-destructive/50" : "border-border"
+                          fieldState.invalid && field.value
+                            ? "border-destructive/50"
+                            : "border-border"
                         } group-hover:border-primary/50`}
                       />
                       {!fieldState.invalid && field.value && (
@@ -158,9 +207,12 @@ export const UploadDialog = ({ open, onOpenChange }: UploadDialogProps) => {
               control={form.control}
               name="phone"
               render={({ field, fieldState }) => (
-                <FormItem className="animate-slide-up" style={{ animationDelay: "150ms" }}>
+                <FormItem
+                  className="animate-slide-up"
+                  style={{ animationDelay: "150ms" }}
+                >
                   <FormLabel className="flex items-center gap-2 font-semibold">
-                    <Phone className="w-4 h-4" />
+                    <Phone className="w-4 h-4 text-foreground" />
                     Phone Number
                     <span className="text-destructive">*</span>
                   </FormLabel>
@@ -172,7 +224,9 @@ export const UploadDialog = ({ open, onOpenChange }: UploadDialogProps) => {
                         {...field}
                         disabled={isSubmitting}
                         className={`transition-all duration-300 focus:ring-2 focus:ring-primary/50 border-2 ${
-                          fieldState.invalid && field.value ? "border-destructive/50" : "border-border"
+                          fieldState.invalid && field.value
+                            ? "border-destructive/50"
+                            : "border-border"
                         } group-hover:border-primary/50`}
                       />
                       {!fieldState.invalid && field.value && (
@@ -190,9 +244,12 @@ export const UploadDialog = ({ open, onOpenChange }: UploadDialogProps) => {
               control={form.control}
               name="position"
               render={({ field, fieldState }) => (
-                <FormItem className="animate-slide-up" style={{ animationDelay: "200ms" }}>
+                <FormItem
+                  className="animate-slide-up"
+                  style={{ animationDelay: "200ms" }}
+                >
                   <FormLabel className="flex items-center gap-2 font-semibold">
-                    <Briefcase className="w-4 h-4" />
+                    <Briefcase className="w-4 h-4 text-foreground" />
                     Position
                     <span className="text-destructive">*</span>
                   </FormLabel>
@@ -203,7 +260,9 @@ export const UploadDialog = ({ open, onOpenChange }: UploadDialogProps) => {
                         {...field}
                         disabled={isSubmitting}
                         className={`transition-all duration-300 focus:ring-2 focus:ring-primary/50 border-2 ${
-                          fieldState.invalid && field.value ? "border-destructive/50" : "border-border"
+                          fieldState.invalid && field.value
+                            ? "border-destructive/50"
+                            : "border-border"
                         } group-hover:border-primary/50`}
                       />
                       {!fieldState.invalid && field.value && (
@@ -221,17 +280,28 @@ export const UploadDialog = ({ open, onOpenChange }: UploadDialogProps) => {
               control={form.control}
               name="seniorityLevel"
               render={({ field, fieldState }) => (
-                <FormItem className="animate-slide-up" style={{ animationDelay: "250ms" }}>
+                <FormItem
+                  className="animate-slide-up"
+                  style={{ animationDelay: "250ms" }}
+                >
                   <FormLabel className="flex items-center gap-2 font-semibold">
-                    <Award className="w-4 h-4" />
+                    <Award className="w-4 h-4 text-foreground" />
                     Seniority Level
                     <span className="text-destructive">*</span>
                   </FormLabel>
-                  <Select onValueChange={field.onChange} value={field.value || ""} disabled={isSubmitting}>
+                  <Select
+                    onValueChange={field.onChange}
+                    value={field.value || ""}
+                    disabled={isSubmitting}
+                  >
                     <FormControl>
-                      <SelectTrigger className={`transition-all duration-300 focus:ring-2 focus:ring-primary/50 border-2 ${
-                        fieldState.invalid && field.value ? "border-destructive/50" : "border-border"
-                      } hover:border-primary/50`}>
+                      <SelectTrigger
+                        className={`transition-all duration-300 focus:ring-2 focus:ring-primary/50 border-2 ${
+                          fieldState.invalid && field.value
+                            ? "border-destructive/50"
+                            : "border-border"
+                        } hover:border-primary/50`}
+                      >
                         <SelectValue placeholder="Select seniority level" />
                       </SelectTrigger>
                     </FormControl>
@@ -275,18 +345,17 @@ export const UploadDialog = ({ open, onOpenChange }: UploadDialogProps) => {
 
             {/* Action Buttons */}
             <div className="flex justify-end gap-3 pt-6 animate-slide-up border-t border-border/50 mt-6">
-              <Button
+              <button
                 type="button"
-                variant="outline"
                 onClick={() => {
                   form.reset();
                   onOpenChange(false);
                 }}
                 disabled={isSubmitting}
-                className="hover:scale-105 transition-all duration-200 border-2"
+                className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer h-10 px-4 py-2 bg-background text-foreground border-2 border-border"
               >
                 Cancel
-              </Button>
+              </button>
               <Button
                 type="submit"
                 disabled={isSubmitting || !form.formState.isValid}

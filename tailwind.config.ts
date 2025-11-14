@@ -39,6 +39,12 @@ export default {
         accent: {
           DEFAULT: "hsl(var(--accent))",
           foreground: "hsl(var(--accent-foreground))",
+          glow: "hsl(var(--accent-glow))",
+        },
+        cyan: {
+          DEFAULT: "hsl(var(--cyan))",
+          foreground: "hsl(var(--cyan-foreground))",
+          glow: "hsl(var(--cyan-glow))",
         },
         success: {
           DEFAULT: "hsl(var(--success))",
@@ -199,7 +205,7 @@ export default {
         "slide-in-from-bottom": "slide-in-from-bottom 0.4s cubic-bezier(0.4, 0, 0.2, 1)",
         "scale-in": "scale-in 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
         "scale-out": "scale-out 0.2s cubic-bezier(0.4, 0, 0.2, 1)",
-        "shimmer": "shimmer 2s linear infinite",
+        "shimmer": "shimmer 3s ease-in-out infinite",
         "bounce-in": "bounce-in 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55)",
         "glow": "glow 2s ease-in-out infinite",
         "float": "float 3s ease-in-out infinite",
@@ -217,14 +223,8 @@ export default {
         "gradient-animation": "gradient-animation 15s ease infinite",
       },
       boxShadow: {
-        "glow-sm": "0 0 10px hsl(var(--primary) / 0.3)",
-        "glow-md": "0 0 20px hsl(var(--primary) / 0.4)",
-        "glow-lg": "0 0 30px hsl(var(--primary) / 0.5)",
-        "success-glow": "0 0 20px hsl(var(--success) / 0.4)",
-        "glass-sm": "0 8px 32px 0 rgba(31, 38, 135, 0.1)",
-        "glass-md": "0 8px 32px 0 rgba(31, 38, 135, 0.15)",
-        "glass-lg": "0 8px 32px 0 rgba(31, 38, 135, 0.25)",
-        "glass-xl": "0 8px 32px 0 rgba(31, 38, 135, 0.35)",
+        // Removed all default box-shadows as per requirements
+        "none": "none",
       },
       backdropBlur: {
         xs: "2px",

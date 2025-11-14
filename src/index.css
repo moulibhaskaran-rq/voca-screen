@@ -8,79 +8,102 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 240 10% 20%;
+    /* Futuristic Light Mode - Soft whites with blue undertones */
+    --background: 220 25% 98%;
+    --foreground: 240 15% 15%;
 
     --card: 0 0% 100%;
-    --card-foreground: 240 10% 20%;
+    --card-foreground: 240 15% 15%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 240 10% 20%;
+    --popover-foreground: 240 15% 15%;
 
-    /* Professional primary - Multi-color gradient system */
-    --primary: 263 100% 50%;
-    --primary-foreground: 0 0% 100%;
-    --primary-glow: 263 100% 60%;
+    /* Primary - Vibrant Yellow #FFE614 */
+    --primary: 51 100% 54%;
+    --primary-foreground: 240 15% 15%;
+    --primary-glow: 51 100% 65%;
 
-    /* Gradient color stops for text */
-    --gradient-start: 263 100% 50%;
-    --gradient-mid: 200 100% 50%;
-    --gradient-end: 280 80% 50%;
+    /* Secondary - Cool Gray for balance */
+    --secondary: 228 12% 48%;
+    --secondary-foreground: 0 0% 100%;
 
-    --secondary: 0 0% 95%;
-    --secondary-foreground: 240 10% 25%;
+    --muted: 220 20% 94%;
+    --muted-foreground: 228 8% 45%;
 
-    --muted: 0 0% 88%;
-    --muted-foreground: 240 10% 45%;
-
-    --accent: 20 95% 55%;
+    /* Accent - Electric Purple for AI/Innovation */
+    --accent: 272 83% 57%;
     --accent-foreground: 0 0% 100%;
+    --accent-glow: 272 83% 65%;
 
-    --success: 142 76% 36%;
+    /* Cyan - Tech accent */
+    --cyan: 190 100% 50%;
+    --cyan-foreground: 240 15% 15%;
+    --cyan-glow: 190 100% 60%;
+
+    /* Success - Vibrant Green */
+    --success: 140 65% 48%;
     --success-foreground: 0 0% 100%;
-    --success-glow: 142 76% 50%;
+    --success-glow: 140 65% 58%;
 
-    --warning: 38 92% 50%;
-    --warning-foreground: 0 0% 100%;
+    /* Warning - Amber */
+    --warning: 28 90% 65%;
+    --warning-foreground: 240 15% 15%;
 
-    --destructive: 0 84% 60%;
+    /* Destructive - Vivid Rose */
+    --destructive: 348 83% 62%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 240 20% 92%;
-    --input: 240 20% 94%;
-    --ring: 241 100% 48%;
+    --border: 220 20% 90%;
+    --input: 220 20% 96%;
+    --ring: 51 100% 54%;
 
     --radius: 0.75rem;
 
-    --chart-1: 241 100% 48%;
-    --chart-2: 20 95% 55%;
-    --chart-3: 180 85% 50%;
-    --chart-4: 330 85% 60%;
-    --chart-5: 60 90% 55%;
+    --chart-1: 51 100% 54%;
+    --chart-2: 45 95% 60%;
+    --chart-3: 38 90% 65%;
+    --chart-4: 140 65% 48%;
+    --chart-5: 28 90% 65%;
 
-    /* Simple solid color approach - no gradients */
-    --gradient-primary: linear-gradient(135deg, hsl(241 100% 48%), hsl(241 100% 48%));
-    --gradient-success: linear-gradient(135deg, hsl(142 76% 36%), hsl(142 76% 36%));
-    --gradient-card: linear-gradient(145deg, hsl(0 0% 100%), hsl(0 0% 100%));
-    --gradient-subtle: linear-gradient(180deg, hsl(0 0% 100%), hsl(0 0% 100%));
+    /* Minimal Gradients - Yellow based */
+    --gradient-primary: linear-gradient(135deg, hsl(51 100% 54%), hsl(45 95% 60%));
+    --gradient-accent: linear-gradient(135deg, hsl(51 100% 54%), hsl(38 90% 65%));
+    --gradient-success: linear-gradient(135deg, hsl(140 65% 48%), hsl(51 100% 54%));
+    --gradient-card: linear-gradient(145deg, rgba(255 255 255 / 0.95), rgba(255 255 255 / 0.85));
+    --gradient-subtle: linear-gradient(180deg, hsl(220 25% 98%), hsl(51 100% 98%));
 
-    /* Simple clean background - pure white */
-    --gradient-bg-main: linear-gradient(-45deg, hsl(0 0% 100%), hsl(0 0% 100%), hsl(0 0% 100%), hsl(0 0% 100%));
-    --gradient-glass: linear-gradient(135deg, rgba(255 255 255 / 0.6), rgba(255 255 255 / 0.4));
-    --gradient-glass-dark: linear-gradient(135deg, rgba(65 105 225 / 0.05), rgba(65 105 225 / 0.02));
+    /* Minimal animated background */
+    --gradient-bg-main: linear-gradient(-45deg,
+      hsl(220 25% 98%),
+      hsl(51 100% 98%),
+      hsl(45 95% 98%),
+      hsl(220 25% 98%)
+    );
 
-    /* Shadows - Clean Light Theme */
-    --shadow-sm: 0 1px 2px -1px hsl(0 0% 0% / 0.05);
-    --shadow-md: 0 2px 4px -2px hsl(0 0% 0% / 0.1);
-    --shadow-lg: 0 4px 8px -4px hsl(0 0% 0% / 0.15);
-    --shadow-xl: 0 8px 16px -8px hsl(0 0% 0% / 0.2);
-    --shadow-glow: 0 0 20px hsl(241 100% 48% / 0.2);
-    --shadow-success-glow: 0 0 20px hsl(142 76% 36% / 0.2);
+    /* Enhanced Glass Effects */
+    --gradient-glass: linear-gradient(135deg,
+      rgba(255 255 255 / 0.85),
+      rgba(255 255 255 / 0.7)
+    );
+    --gradient-glass-dark: linear-gradient(135deg,
+      rgba(255 230 20 / 0.08),
+      rgba(255 230 20 / 0.04)
+    );
 
-    /* Subtle shadows - minimalist glass effect */
-    --shadow-glass-sm: 0 2px 8px 0 rgba(0, 0, 0, 0.05);
-    --shadow-glass-md: 0 4px 12px 0 rgba(0, 0, 0, 0.1);
-    --shadow-glass-lg: 0 8px 20px 0 rgba(0, 0, 0, 0.15);
+    /* No shadows - Removed all default shadows */
+    --shadow-sm: none;
+    --shadow-md: none;
+    --shadow-lg: none;
+    --shadow-xl: none;
+    --shadow-glow: 0 0 20px hsl(51 100% 54% / 0.25);
+    --shadow-accent-glow: 0 0 20px hsl(51 100% 54% / 0.25);
+    --shadow-cyan-glow: 0 0 20px hsl(51 100% 54% / 0.25);
+    --shadow-success-glow: 0 0 20px hsl(140 65% 48% / 0.25);
+
+    /* No glass shadows */
+    --shadow-glass-sm: none;
+    --shadow-glass-md: none;
+    --shadow-glass-lg: none;
 
     /* Transitions */
     --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -88,77 +111,100 @@ All colors MUST be HSL.
   }
 
   .dark {
-    --background: 240 10% 10%;
-    --foreground: 240 10% 95%;
+    /* Futuristic Dark Mode - Deep space with electric accents */
+    --background: 240 20% 6%;
+    --foreground: 220 15% 92%;
 
-    --card: 240 10% 18%;
-    --card-foreground: 240 10% 95%;
+    --card: 240 18% 10%;
+    --card-foreground: 220 15% 92%;
 
-    --popover: 240 10% 18%;
-    --popover-foreground: 240 10% 95%;
+    --popover: 240 18% 10%;
+    --popover-foreground: 220 15% 92%;
 
-    /* Professional primary - Vibrant Purple */
-    --primary: 263 100% 58%;
-    --primary-foreground: 0 0% 100%;
-    --primary-glow: 263 100% 70%;
+    /* Primary - Vibrant Yellow #FFE614 */
+    --primary: 51 100% 54%;
+    --primary-foreground: 240 20% 6%;
+    --primary-glow: 51 100% 65%;
 
-    /* Gradient color stops for dark mode text */
-    --gradient-start: 263 100% 58%;
-    --gradient-mid: 200 100% 60%;
-    --gradient-end: 280 80% 60%;
+    /* Secondary - Cool Gray */
+    --secondary: 228 12% 35%;
+    --secondary-foreground: 220 15% 92%;
 
-    --secondary: 240 10% 25%;
-    --secondary-foreground: 240 10% 95%;
+    --muted: 240 15% 18%;
+    --muted-foreground: 228 10% 65%;
 
-    --muted: 240 10% 30%;
-    --muted-foreground: 240 10% 70%;
-
-    --accent: 20 95% 65%;
+    /* Accent - Vivid Purple */
+    --accent: 272 83% 62%;
     --accent-foreground: 0 0% 100%;
+    --accent-glow: 272 83% 72%;
 
-    --success: 142 76% 36%;
-    --success-foreground: 0 0% 100%;
-    --success-glow: 142 76% 50%;
+    /* Cyan - Bright tech accent */
+    --cyan: 190 100% 55%;
+    --cyan-foreground: 240 20% 6%;
+    --cyan-glow: 190 100% 65%;
 
-    --warning: 38 92% 50%;
-    --warning-foreground: 0 0% 100%;
+    /* Success - Bright Green */
+    --success: 140 65% 52%;
+    --success-foreground: 240 20% 6%;
+    --success-glow: 140 65% 62%;
 
-    --destructive: 0 63% 31%;
+    /* Warning - Bright Amber */
+    --warning: 28 90% 68%;
+    --warning-foreground: 240 20% 6%;
+
+    /* Destructive - Bright Rose */
+    --destructive: 348 83% 65%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 240 10% 25%;
-    --input: 240 10% 25%;
-    --ring: 241 100% 55%;
+    --border: 240 15% 20%;
+    --input: 240 15% 15%;
+    --ring: 51 100% 54%;
 
-    --chart-1: 241 100% 55%;
-    --chart-2: 20 95% 65%;
-    --chart-3: 180 85% 60%;
-    --chart-4: 330 85% 70%;
-    --chart-5: 60 90% 65%;
+    --chart-1: 51 100% 54%;
+    --chart-2: 45 95% 60%;
+    --chart-3: 38 90% 65%;
+    --chart-4: 140 65% 52%;
+    --chart-5: 28 90% 68%;
 
-    /* Simple solid dark gradients */
-    --gradient-primary: linear-gradient(135deg, hsl(241 100% 55%), hsl(241 100% 55%));
-    --gradient-success: linear-gradient(135deg, hsl(142 76% 36%), hsl(142 76% 36%));
-    --gradient-card: linear-gradient(145deg, hsl(240 10% 18%), hsl(240 10% 18%));
-    --gradient-subtle: linear-gradient(180deg, hsl(240 10% 10%), hsl(240 10% 10%));
+    /* Minimal Dark Gradients - Yellow based */
+    --gradient-primary: linear-gradient(135deg, hsl(51 100% 54%), hsl(45 95% 60%));
+    --gradient-accent: linear-gradient(135deg, hsl(51 100% 54%), hsl(38 90% 65%));
+    --gradient-success: linear-gradient(135deg, hsl(140 65% 52%), hsl(51 100% 54%));
+    --gradient-card: linear-gradient(145deg, rgba(24, 24, 36, 0.95), rgba(16, 16, 26, 0.9));
+    --gradient-subtle: linear-gradient(180deg, hsl(240 20% 6%), hsl(240 18% 10%));
 
-    /* Simple clean dark background */
-    --gradient-bg-main: linear-gradient(-45deg, hsl(240 10% 10%), hsl(240 10% 10%), hsl(240 10% 10%), hsl(240 10% 10%));
-    --gradient-glass: linear-gradient(135deg, rgba(255 255 255 / 0.1), rgba(255 255 255 / 0.02));
-    --gradient-glass-dark: linear-gradient(135deg, rgba(65 105 225 / 0.08), rgba(65 105 225 / 0.02));
+    /* Minimal dark animated background */
+    --gradient-bg-main: linear-gradient(-45deg,
+      hsl(240 20% 6%),
+      hsl(240 25% 8%),
+      hsl(51 40% 10%),
+      hsl(45 40% 12%)
+    );
 
-    /* Shadows - Dark Theme */
-    --shadow-sm: 0 1px 2px -1px hsl(0 0% 0% / 0.3);
-    --shadow-md: 0 2px 4px -2px hsl(0 0% 0% / 0.4);
-    --shadow-lg: 0 4px 8px -4px hsl(0 0% 0% / 0.5);
-    --shadow-xl: 0 8px 16px -8px hsl(0 0% 0% / 0.6);
-    --shadow-glow: 0 0 20px hsl(241 100% 55% / 0.4);
-    --shadow-success-glow: 0 0 20px hsl(142 76% 36% / 0.4);
+    /* Enhanced Dark Glass Effects */
+    --gradient-glass: linear-gradient(135deg,
+      rgba(255 230 20 / 0.12),
+      rgba(255 230 20 / 0.08)
+    );
+    --gradient-glass-dark: linear-gradient(135deg,
+      rgba(255 230 20 / 0.15),
+      rgba(255 230 20 / 0.1)
+    );
 
-    /* Subtle shadows - dark theme glass effect */
-    --shadow-glass-sm: 0 2px 8px 0 rgba(0, 0, 0, 0.3);
-    --shadow-glass-md: 0 4px 12px 0 rgba(0, 0, 0, 0.4);
-    --shadow-glass-lg: 0 8px 20px 0 rgba(0, 0, 0, 0.5);
+    /* No shadows - Dark Theme */
+    --shadow-sm: none;
+    --shadow-md: none;
+    --shadow-lg: none;
+    --shadow-xl: none;
+    --shadow-glow: 0 0 25px hsl(51 100% 54% / 0.3);
+    --shadow-accent-glow: 0 0 25px hsl(51 100% 54% / 0.3);
+    --shadow-cyan-glow: 0 0 25px hsl(51 100% 54% / 0.3);
+    --shadow-success-glow: 0 0 25px hsl(140 65% 52% / 0.3);
+
+    /* No glass shadows */
+    --shadow-glass-sm: none;
+    --shadow-glass-md: none;
+    --shadow-glass-lg: none;
 
     /* Transitions */
     --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -173,6 +219,9 @@ All colors MUST be HSL.
 
   html, body {
     @apply text-foreground;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 
   body {
@@ -187,30 +236,46 @@ All colors MUST be HSL.
 
   /* No animated orbs - clean minimal design */
 
-  /* Glassy effect utilities */
+  /* Enhanced Glassy effect utilities */
   .glass {
     background: var(--gradient-glass);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.18);
+    backdrop-filter: blur(16px) saturate(180%);
+    -webkit-backdrop-filter: blur(16px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.25);
   }
 
   .glass-dark {
     background: var(--gradient-glass-dark);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(16px) saturate(180%);
+    -webkit-backdrop-filter: blur(16px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.15);
   }
 
-  .shadow-glass {
-    box-shadow: var(--shadow-glass-md);
+  /* Removed all shadow utilities */
+
+  /* Cursor utilities */
+  button, [role="button"], a {
+    cursor: pointer;
   }
 
-  .shadow-glass-sm {
-    box-shadow: var(--shadow-glass-sm);
+  input, textarea, select {
+    cursor: text;
   }
 
-  .shadow-glass-lg {
-    box-shadow: var(--shadow-glass-lg);
+  [disabled], [aria-disabled="true"] {
+    cursor: not-allowed;
+  }
+
+  /* Cursor utilities */
+  button, [role="button"], a {
+    cursor: pointer;
+  }
+
+  input, textarea, select {
+    cursor: text;
+  }
+
+  [disabled], [aria-disabled="true"] {
+    cursor: not-allowed;
   }
 }
